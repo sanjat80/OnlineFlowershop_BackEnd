@@ -2,6 +2,7 @@
 using Cvijecara_Sanja_Tica_IT80_2019.Data.TipKorisnikaData;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.TipKorisnikaModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
@@ -9,6 +10,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
     [ApiController]
     [Route("api/tipoviKorisnika")]
     [Produces("application/json","application/xml")]
+    [Authorize(Roles ="admin")]
     public class TipKorisnikaController : ControllerBase
     {
         private readonly ITipKorisnikaRepository tipRepository;
@@ -23,6 +25,9 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
 
         [HttpGet]
+        [HttpHead]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult<List<TipKorisnikaDto>> GetAllTipKorisnika()
         {
             var tipovi = tipRepository.GetAllTipKorisnika();
@@ -34,6 +39,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<TipKorisnikaDto> GetTipKorisnikaById(int id)
         {
             var tip = tipRepository.GetTipKorisnikaById(id);
@@ -45,6 +52,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
         [HttpPost]
         [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<TipKorisnikaConfirmationDto> CreateTipKorisnika([FromBody]TipKorisnikaCreationDto tipKOrisnika)
         {
             try
@@ -62,6 +71,9 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult DeleteTipKorisnika(int id)
         {
             try
@@ -83,6 +95,9 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
 
         [HttpPut]
         [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<TipKorisnikaDto> UpdateTipKorisnika(TipKorisnikaUpdateDto tipKorisnika)
         {
             try

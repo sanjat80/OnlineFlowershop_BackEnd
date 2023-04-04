@@ -4,6 +4,7 @@ using Cvijecara_Sanja_Tica_IT80_2019.Data.PakovanjeData;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.KategorijaModel;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.PakovanjeModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
@@ -24,6 +25,9 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             this.mapper = mapper;
         }
         [HttpGet]
+        [HttpHead]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult<List<KategorijaDto>> GetAllKategorija()
         {
             var kategorije = kategorijaRepository.GetAllKategorija();
@@ -34,6 +38,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             return Ok(mapper.Map<List<KategorijaDto>>(kategorije));
         }
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<KategorijaDto> GetKategorijaById(int id)
         {
             var kategorija = kategorijaRepository.GetKategorijaById(id);
@@ -44,8 +50,11 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             return Ok(mapper.Map<KategorijaDto>(kategorija));
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<KategorijaConfirmationDto> CreateKategorija([FromBody] KategorijaCreationDto kategorija)
         {
             //try
@@ -63,6 +72,10 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles ="admin")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult DeleteKategorija(int id)
         {
             try
@@ -83,6 +96,10 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
         [HttpPut]
         [Consumes("application/json")]
+        [Authorize(Roles ="admin")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<KategorijaDto> UpdateKategorija(KategorijaUpdateDto kategorija)
         {
             try

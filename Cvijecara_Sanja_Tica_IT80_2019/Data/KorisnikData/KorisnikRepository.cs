@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorisnikData
 {
@@ -45,6 +46,11 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorisnikData
         public void UpdateKorisnik(Korisnik korisnik)
         {
             //throw new NotImplementedException();
+        }
+
+        public Korisnik GetKorisnikByKorisnickoIme(string korisnickoIme)
+        {
+            return context.Korisniks.FirstOrDefault(ki => ki.KorisnickoIme == korisnickoIme);
         }
     }
 }

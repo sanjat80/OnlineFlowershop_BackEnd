@@ -4,6 +4,7 @@ using Cvijecara_Sanja_Tica_IT80_2019.Data.VrstaData;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.KategorijaModel;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.VrstaModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
@@ -24,6 +25,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             this.mapper = mapper;
         }
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult<List<VrstaDto>> GetAllVrsta()
         {
             var vrste = vrstaRepository.GetAllVrsta();
@@ -34,6 +37,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             return Ok(mapper.Map<List<VrstaDto>>(vrste));
         }
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<VrstaDto> GetVrstaById(int id)
         {
             var vrsta = vrstaRepository.GetVrstaById(id);
@@ -46,6 +51,9 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
 
         [HttpPost]
         [Consumes("application/json")]
+        [Authorize(Roles ="admin")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<VrstaConfirmationDto> CreateVrsta([FromBody] VrstaCreationDto vrsta)
         {
             try
@@ -63,6 +71,10 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult DeleteVrsta(int id)
         {
             try
@@ -83,6 +95,10 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
         [HttpPut]
         [Consumes("application/json")]
+        [Authorize(Roles = "admin")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<VrstaDto> UpdateVrsta(VrstaUpdateDto vrsta)
         {
             try

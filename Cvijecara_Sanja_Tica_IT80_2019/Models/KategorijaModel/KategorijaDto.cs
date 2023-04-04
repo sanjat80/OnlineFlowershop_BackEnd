@@ -8,6 +8,6 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Models.KategorijaModel
 
         public string? Opis { get; set; }
 
-        public virtual ICollection<Proizvod> Proizvods { get; } = new List<Proizvod>();
+        //public virtual ICollection<Proizvod> Proizvods { get; } = new List<Proizvod>();
     }
 }

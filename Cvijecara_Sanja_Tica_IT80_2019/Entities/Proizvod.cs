@@ -14,6 +14,7 @@ public partial class Proizvod
 
     public decimal? Cijena { get; set; }
 
+    [MaxLength(5)]
     public string Valuta { get; set; } = null!;
 
     public string? Velicina { get; set; }

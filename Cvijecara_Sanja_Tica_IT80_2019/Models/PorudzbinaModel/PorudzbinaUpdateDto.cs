@@ -16,6 +16,6 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Models.PorudzbinaModel
 
         public decimal? Popust { get; set; }
 
-        public virtual ICollection<StavkaKorpe> StavkaKorpes { get; } = new List<StavkaKorpe>();
+        //public virtual ICollection<StavkaKorpe> StavkaKorpes { get; } = new List<StavkaKorpe>();
     }
 }

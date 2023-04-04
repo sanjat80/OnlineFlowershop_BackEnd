@@ -4,6 +4,7 @@ using Cvijecara_Sanja_Tica_IT80_2019.Data.TransakcijaData;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.KategorijaModel;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.TransakcijaModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Data;
@@ -13,6 +14,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
     [ApiController]
     [Route("api/transakcije")]
     [Consumes("application/json","application/xml")]
+    [Authorize(Roles ="admin")]
     public class TransakcijaController:ControllerBase
     {
         private readonly ITransakcijaRepository transakcijaRepository;
@@ -27,6 +29,9 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
 
         [HttpGet]
+        [HttpHead]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult<List<TransakcijaDto>> GetAllTransakcija()
         {
             var transakcije = transakcijaRepository.GetAllTransakcija();
@@ -37,6 +42,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             return Ok(mapper.Map<List<TransakcijaDto>>(transakcije));
         }
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<TransakcijaDto> GetTransakcijaById(int id)
         {
             var transakcija = transakcijaRepository.GetTransakcijaById(id);
@@ -49,6 +56,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
 
         [HttpPost]
         [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<TransakcijaConfirmationDto> CreateTransakcija([FromBody] TransakcijaCreationDto transakcija)
         {
             try
@@ -70,6 +79,9 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult DeleteTransakcija(int id)
         {
             try
@@ -94,6 +106,9 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
         [HttpPut]
         [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<TransakcijaDto> UpdateTransakcija(TransakcijaUpdateDto transakcija)
         {
             try

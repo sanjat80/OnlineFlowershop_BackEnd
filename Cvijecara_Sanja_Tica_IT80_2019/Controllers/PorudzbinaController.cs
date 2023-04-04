@@ -4,6 +4,7 @@ using Cvijecara_Sanja_Tica_IT80_2019.Data.PorudzbinaData;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.KategorijaModel;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.PorudzbinaModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
@@ -24,6 +25,10 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             this.mapper = mapper;
         }
         [HttpGet]
+        [Authorize(Roles ="admin")]
+        [HttpHead]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult<List<PorudzbinaDto>> GetAllPorudzbina()
         {
             var porudzbine = porudzbinaRepository.GetAllPorudzbina();
@@ -34,6 +39,9 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             return Ok(mapper.Map<List<PorudzbinaDto>>(porudzbine));
         }
         [HttpGet("{id}")]
+        [Authorize(Roles ="admin,registrovani")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<PorudzbinaDto> GetPorudzbinaById(int id)
         {
             var porudzbina = porudzbinaRepository.GetPorudzbinaById(id);
@@ -44,8 +52,11 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             return Ok(mapper.Map<PorudzbinaDto>(porudzbina));
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<PorudzbinaConfirmationDto> CreatePorudzbina([FromBody] PorudzbinaCreationDto porudzbina)
         {
             //try
@@ -63,6 +74,10 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles ="admin")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult DeletePorudzbina(int id)
         {
             try
@@ -81,8 +96,13 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom brisanja porudzbine");
             }
         }
+
+        [Authorize(Roles = "admin")]
         [HttpPut]
         [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<PorudzbinaDto> UpdatePorudzbina(PorudzbinaUpdateDto porudzbina)
         {
             try

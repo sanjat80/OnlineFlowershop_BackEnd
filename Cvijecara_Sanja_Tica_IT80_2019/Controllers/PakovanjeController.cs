@@ -4,6 +4,7 @@ using Cvijecara_Sanja_Tica_IT80_2019.Data.TipKorisnikaData;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.PakovanjeModel;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.TipKorisnikaModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
@@ -25,6 +26,9 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
 
         [HttpGet]
+        [HttpHead]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult<List<PakovanjeDto>> GetAllPakovanje()
         {
             var pakovanja = pakovanjeRepository.GetAllPakovanje();
@@ -36,6 +40,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<PakovanjeDto> GetPakovanjeById(int id)
         {
             var pakovanje = pakovanjeRepository.GetPakovanjeById(id);
@@ -46,8 +52,11 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             return Ok(mapper.Map<PakovanjeDto>(pakovanje));
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<PakovanjeConfirmationDto> CreatePakovanje([FromBody] PakovanjeCreationDto pakovanje)
         {
             try
@@ -65,6 +74,10 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles ="admin")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult DeletePakovanje(int id)
         {
             try
@@ -84,8 +97,12 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             }
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPut]
         [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<PakovanjeDto> UpdatePakovanje(PakovanjeUpdateDto pakovanje)
         {
             try

@@ -4,6 +4,7 @@ using Cvijecara_Sanja_Tica_IT80_2019.Data.KorisnikData;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.KategorijaModel;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.KorisnikModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
@@ -11,6 +12,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
     [ApiController]
     [Route("api/korisnici")]
     [Consumes("application/json","application/xml")]
+    [Authorize(Roles ="admin")]
     public class KorisnikController:ControllerBase
     {
         private readonly IKorisnikRepository korisnikRepository;
@@ -25,6 +27,9 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
 
         [HttpGet]
+        [HttpHead]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult<List<KorisnikDto>> GetAllKorisnik()
         {
             var korisnici = korisnikRepository.GetAllKorisnik();
@@ -35,6 +40,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             return Ok(mapper.Map<List<KorisnikDto>>(korisnici));
         }
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<KorisnikDto> GetKorisnikById(int id)
         {
             var korisnik = korisnikRepository.GetKorisnikById(id);
@@ -47,15 +54,20 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
 
         [HttpPost]
         [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<KorisnikConfirmationDto> CreateKorisnik([FromBody] KorisnikCreationDto korisnik)
         {
             try
             {
-            Korisnik user = mapper.Map<Korisnik>(korisnik);
-            KorisnikConfirmation confirmation = korisnikRepository.CreateKorisnik(user);
-            korisnikRepository.SaveChanges();
+             string? lozinka = korisnik.Lozinka;
+             string lozinka2 = BCrypt.Net.BCrypt.HashPassword(lozinka);
+             korisnik.Lozinka = lozinka2;
+             Korisnik user = mapper.Map<Korisnik>(korisnik);
+             KorisnikConfirmation confirmation = korisnikRepository.CreateKorisnik(user);
+             korisnikRepository.SaveChanges();
             //string? location = linkGenerator.GetPathByAction("GetKorisnikById", "Korisnik", new { korisnikId = confirmation.KorisnikId });
-            return Ok(user);
+             return Ok(user);
             }
             catch(Microsoft.EntityFrameworkCore.DbUpdateException)
             {
@@ -68,6 +80,9 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult DeleteKorisnik(int id)
         {
             try
@@ -92,6 +107,9 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
         [HttpPut]
         [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<KorisnikDto> UpdateKorisnik(KorisnikUpdateDto korisnik)
         {
             //try

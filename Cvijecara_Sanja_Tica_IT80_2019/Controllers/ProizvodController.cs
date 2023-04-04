@@ -4,6 +4,7 @@ using Cvijecara_Sanja_Tica_IT80_2019.Data.ProizvodData;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.PorudzbinaModel;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.ProizvodModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
@@ -25,6 +26,9 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
 
         [HttpGet]
+        [HttpHead]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult<List<ProizvodDto>> GetAllProizvod()
         {
             var proizvodi = proizvodRepository.GetAllProizvod();
@@ -35,6 +39,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             return Ok(mapper.Map<List<ProizvodDto>>(proizvodi));
         }
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<ProizvodDto> GetProizvodById(int id)
         {
             var proizvod = proizvodRepository.GetProizvodById(id);
@@ -45,25 +51,32 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             return Ok(mapper.Map<ProizvodDto>(proizvod));
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<ProizvodConfirmationDto> CreateProizvod([FromBody] ProizvodCreationDto proizvod)
         {
-            //try
-            //{
+            try
+            {
             Proizvod product = mapper.Map<Proizvod>(proizvod);
             ProizvodConfirmation confirmation = proizvodRepository.CreateProizvod(product);
             proizvodRepository.SaveChanges();
-            //string? location = linkGenerator.GetPathByAction("GetTipKorisnikaById", "TipKorisnika", new { tipId = confirmation.TipId });
+            //string? location = linkGenerator.GetPathByAction("GetProizvodById", "Proizvod", new { proizvodId = confirmation.ProizvodId });
             return Ok(product);
-            /*}
+            }
             catch
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom kreiranja pakovanja");
-            }*/
+            }
         }
 
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult DeleteProizvod(int id)
         {
             try
@@ -86,8 +99,13 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom brisanja proizvoda.");
             }
         }
+
+        [Authorize(Roles = "admin")]
         [HttpPut]
         [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<ProizvodDto> UpdateProizvod(ProizvodUpdateDto proizvod)
         {
             try

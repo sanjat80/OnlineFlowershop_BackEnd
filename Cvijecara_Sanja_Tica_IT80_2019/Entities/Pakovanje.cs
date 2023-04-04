@@ -13,6 +13,7 @@ public partial class Pakovanje
 
     public decimal Cijena { get; set; }
 
+    [MaxLength(5)]
     public string Valuta { get; set; } = null!;
 
     public string? Ukrasi { get; set; }
