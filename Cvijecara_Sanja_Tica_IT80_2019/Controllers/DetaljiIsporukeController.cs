@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Cvijecara_Sanja_Tica_IT80_2019.Data.DetaljiIsporukeData;
 using Cvijecara_Sanja_Tica_IT80_2019.Data.KategorijaData;
+using Cvijecara_Sanja_Tica_IT80_2019.Data.PorudzbinaData;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.DetaljiIsporukeModel;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.KategorijaModel;
@@ -11,12 +12,13 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
 {
     [ApiController]
     [Route("api/detaljiIsporuke")]
+    [Produces("application/json","application/xml")]
     public class DetaljiIsporukeController:ControllerBase
     {
         private readonly IDetaljiIsporukeRepository detaljiIsporukeRepository;
         private readonly LinkGenerator linkGenerator;
         private readonly IMapper mapper;
-
+  
         public DetaljiIsporukeController(IDetaljiIsporukeRepository detaljiIsporukeRepository,LinkGenerator linkGenerator,IMapper mapper)
         {
             this.detaljiIsporukeRepository = detaljiIsporukeRepository;
@@ -59,11 +61,20 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         {
             try
             {
-            DetaljiIsporuke detalji = mapper.Map<DetaljiIsporuke>(detaljiIsporuke);
-            DetaljiIsporukeConfirmation confirmation = detaljiIsporukeRepository.CreateDetaljiIsporuke(detalji);
-            detaljiIsporukeRepository.SaveChanges();
-            string? location = linkGenerator.GetPathByAction("GetDetaljiIsporukeById", "DetaljiIsporuke", new { detaljiId = confirmation.IsporukaId });
-            return Created(location,detalji);
+                DetaljiIsporuke detalji = mapper.Map<DetaljiIsporuke>(detaljiIsporuke);
+                var porudzbina = detalji.PorudzbinaId;
+                List<int> porudzbine = detaljiIsporukeRepository.GetAllPorudzbinaId();
+                if (porudzbine.Contains(porudzbina))
+               {
+                    DetaljiIsporukeConfirmation confirmation = detaljiIsporukeRepository.CreateDetaljiIsporuke(detalji);
+                    detaljiIsporukeRepository.SaveChanges();
+                    //string? location = linkGenerator.GetPathByAction("GetDetaljiIsporukeById", "DetaljiIsporukeController", new { detaljiId = confirmation.IsporukaId });
+                    return Ok(detalji);
+                }
+                else
+                {
+                    return NotFound("Porudzbina koju zelite da proslijedite kao strani kljuc nije pronadjena u bazi!");
+                }
             }
             catch(Microsoft.EntityFrameworkCore.DbUpdateException)
             {
@@ -112,15 +123,24 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         {
             try
             {
-            var stariDetalji = detaljiIsporukeRepository.GetDetaljiIsporukeById(detaljiIsporuke.IsporukaId);
-            if (stariDetalji == null)
-            {
-                return NotFound("Detalji isporuke sa proslijedjenim id-em nisu pronadjeni.");
-            }
-            DetaljiIsporuke detalji = mapper.Map<DetaljiIsporuke>(detaljiIsporuke);
-            mapper.Map(detalji, stariDetalji);
-            detaljiIsporukeRepository.SaveChanges();
-            return Ok(mapper.Map<DetaljiIsporukeDto>(stariDetalji));
+                var stariDetalji = detaljiIsporukeRepository.GetDetaljiIsporukeById(detaljiIsporuke.IsporukaId);
+                if (stariDetalji == null)
+                {
+                    return NotFound("Detalji isporuke sa proslijedjenim id-em nisu pronadjeni.");
+                }
+                DetaljiIsporuke detalji = mapper.Map<DetaljiIsporuke>(detaljiIsporuke);
+                var porudzbina = detalji.PorudzbinaId;
+                List<int> porudzbine = detaljiIsporukeRepository.GetAllPorudzbinaId();
+                if(porudzbine.Contains(porudzbina))
+                {
+                    mapper.Map(detalji, stariDetalji);
+                    detaljiIsporukeRepository.SaveChanges();
+                    return Ok(mapper.Map<DetaljiIsporukeDto>(stariDetalji));
+                }
+                else
+                {
+                    return NotFound("Porudzbina koju zelite da proslijedite kao strani kljuc nije pronadjena u bazi!");
+                }
             }
             catch (Exception)
             {

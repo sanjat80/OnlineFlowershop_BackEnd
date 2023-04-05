@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorpaData
 {
@@ -43,6 +44,18 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorpaData
         public void UpdateKorpa(Korpa korpa)
         {
            // throw new NotImplementedException();
+        }
+        public List<string> GetStavkeKorpeByKorpaId(int korpaId)
+        {
+            using (var context = new CvijecaraContext())
+            {
+                var naziviProizvoda = from p in context.Proizvods
+                                      join sk in context.StavkaKorpes on p.ProizvodId equals sk.ProizvodId
+                                      where sk.KorpaId == korpaId
+                                      select p.Naziv;
+
+                return naziviProizvoda.ToList();
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Data.PorudzbinaData
 {
@@ -44,5 +45,30 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.PorudzbinaData
         {
             //throw new NotImplementedException();
         }
+
+        public decimal GetRacunPorudzbineByPorudzbinaId(int porudzbinaId)
+        {
+            var porudzbina = GetPorudzbinaById(porudzbinaId);
+
+            return (decimal)porudzbina.Racun;
+        }
+
+        public decimal GetPopustNaPorudzbinuByPorudzbinaId(int porudzbinaId)
+        {
+            var porudzbina = GetPorudzbinaById(porudzbinaId);
+            return (decimal)porudzbina.Popust;
+        }
+
+        public List<int> GetAllPorudzbinaId()
+        {
+            using (var context = new CvijecaraContext())
+            {
+                var naziviProizvoda = from p in context.Porudzbinas
+                                      select p.PorudzbinaId;
+
+                return naziviProizvoda.ToList();
+            }
+        }
     }
 }
+

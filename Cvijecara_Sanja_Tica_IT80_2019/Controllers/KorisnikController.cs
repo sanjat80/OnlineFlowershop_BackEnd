@@ -11,7 +11,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
 {
     [ApiController]
     [Route("api/korisnici")]
-    [Consumes("application/json","application/xml")]
+    [Produces("application/json","application/xml")]
     [Authorize(Roles ="admin")]
     public class KorisnikController:ControllerBase
     {
@@ -112,22 +112,22 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<KorisnikDto> UpdateKorisnik(KorisnikUpdateDto korisnik)
         {
-            //try
-            //{
-            var stariKorisnik = korisnikRepository.GetKorisnikById(korisnik.KorisnikId);
-            if (stariKorisnik == null)
+            try
             {
-                return NotFound("Korisnik sa proslijedjenim id-em nije pronadjen.");
+                var stariKorisnik = korisnikRepository.GetKorisnikById(korisnik.KorisnikId);
+                if (stariKorisnik == null)
+                {
+                    return NotFound("Korisnik sa proslijedjenim id-em nije pronadjen.");
+                }
+                Korisnik user = mapper.Map<Korisnik>(korisnik);
+                mapper.Map(user, stariKorisnik);
+                korisnikRepository.SaveChanges();
+                return Ok(mapper.Map<KorisnikDto>(stariKorisnik));
             }
-            Korisnik user = mapper.Map<Korisnik>(korisnik);
-            mapper.Map(user, stariKorisnik);
-            korisnikRepository.SaveChanges();
-            return Ok(mapper.Map<KorisnikDto>(stariKorisnik));
-            /*}
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom azuriranja kategorije.");
-            }*/
+            }
         }
     }
 }

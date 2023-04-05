@@ -1,4 +1,5 @@
 ﻿using Cvijecara_Sanja_Tica_IT80_2019.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorpaData
 {
@@ -10,5 +11,6 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorpaData
         void UpdateKorpa(Korpa korpa);
         void DeleteKorpa(int id);
         bool SaveChanges();
+        List<string> GetStavkeKorpeByKorpaId(int korpaId);
     }
 }

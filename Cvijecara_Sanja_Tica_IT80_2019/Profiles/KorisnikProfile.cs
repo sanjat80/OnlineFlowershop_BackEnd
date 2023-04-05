@@ -13,6 +13,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Profiles
             CreateMap<KorisnikDto, Korisnik>();
             CreateMap<KorisnikUpdateDto, Korisnik>();
             CreateMap<KorisnikCreationDto, Korisnik>();
+            CreateMap<KorisnikRegistrationDto, Korisnik>();
             CreateMap<Korisnik, Korisnik>();
             CreateMap<KorisnikConfirmation, Korisnik>();
             CreateMap<Korisnik, KorisnikConfirmation>();

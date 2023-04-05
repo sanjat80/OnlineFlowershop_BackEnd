@@ -10,5 +10,6 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.DetaljiIsporukeData
         void UpdateDetaljiIsporuke(DetaljiIsporuke detaljiIsporuke);
         void DeleteDetaljiIsporuke(int id);
         bool SaveChanges();
+        public List<int> GetAllPorudzbinaId();
     }
 }

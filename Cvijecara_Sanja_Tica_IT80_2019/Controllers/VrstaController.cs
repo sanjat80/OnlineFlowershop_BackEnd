@@ -11,7 +11,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
 {
     [ApiController]
     [Route("api/vrste")]
-    [Consumes("application/json","application/xml")]
+    [Produces("application/json","application/xml")]
     public class VrstaController:ControllerBase
     {
         private readonly IVrstaRepository vrstaRepository;

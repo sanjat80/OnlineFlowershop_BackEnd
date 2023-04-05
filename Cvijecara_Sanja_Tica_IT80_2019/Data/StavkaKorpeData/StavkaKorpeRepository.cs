@@ -19,9 +19,9 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
             return mapper.Map<StavkaKorpeConfirmation>(stavkaKorpeEntity.Entity);
         }
 
-        public void DeleteStavkaKorpe(int id)
+        public void DeleteStavkaKorpe(int proizvodId,int korpaId)
         {
-            var stavkaKorpe = GetStavkaKorpeById(id);
+            var stavkaKorpe = GetStavkaKorpeById(proizvodId, korpaId);
             context.Remove(stavkaKorpe);
         }
 
@@ -30,9 +30,9 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
             return context.StavkaKorpes.ToList();
         }
 
-        public StavkaKorpe GetStavkaKorpeById(int id)
+        public StavkaKorpe GetStavkaKorpeById(int proizvodId, int korpaId)
         {
-            return context.StavkaKorpes.FirstOrDefault(sk => sk.KorpaId == id);
+            return context.StavkaKorpes.Find(proizvodId, korpaId);
         }
 
         public bool SaveChanges()

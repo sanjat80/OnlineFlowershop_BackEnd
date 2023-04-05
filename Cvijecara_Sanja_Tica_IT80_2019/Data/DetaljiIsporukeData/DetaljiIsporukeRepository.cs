@@ -45,5 +45,15 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.DetaljiIsporukeData
         {
             //throw new NotImplementedException();
         }
+        public List<int> GetAllPorudzbinaId()
+        {
+            using (var context = new CvijecaraContext())
+            {
+                var naziviProizvoda = from p in context.Porudzbinas
+                                      select p.PorudzbinaId;
+
+                return naziviProizvoda.ToList();
+            }
+        }
     }
 }

@@ -11,7 +11,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
 {
     [ApiController]
     [Route("api/korpe")]
-    [Consumes("application/json","application/xml")]
+    [Produces("application/json","application/xml")]
     [Authorize(Roles ="admin")]
     public class KorpaController:ControllerBase
     {
@@ -106,8 +106,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<KorpaDto> UpdateKorpa(KorpaUpdateDto korpa)
         {
-            //try
-            //{
+            try
+            {
             var staraKorpa = korpaRepository.GetKorpaById(korpa.KorpaId);
             if (staraKorpa == null)
             {
@@ -117,11 +117,29 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             mapper.Map(basket, staraKorpa);
             korpaRepository.SaveChanges();
             return Ok(mapper.Map<KorpaDto>(staraKorpa));
-            /*}
+            }
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom azuriranja kategorije.");
-            }*/
+            }
         }
+        [HttpGet("stavkeKorpe/{korpaId}")]
+        public ActionResult<List<string>> GetStavkeKorpeByKorpaId(int korpaId)
+        {
+            try
+            {
+                var stavke = korpaRepository.GetStavkeKorpeByKorpaId(korpaId);
+                if (stavke.Count == 0)
+                {
+                    return NotFound("U korpi se ne nalazi nijedan proizvod.");
+                }
+                return stavke.ToList();
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom pregleda proizvoda korpe sa proslijedjenim id-em.");
+            }
+        }
+
     }
 }

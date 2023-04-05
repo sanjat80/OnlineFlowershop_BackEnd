@@ -13,7 +13,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
 {
     [ApiController]
     [Route("api/transakcije")]
-    [Consumes("application/json","application/xml")]
+    [Produces("application/json","application/xml")]
     [Authorize(Roles ="admin")]
     public class TransakcijaController:ControllerBase
     {
@@ -60,14 +60,23 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<TransakcijaConfirmationDto> CreateTransakcija([FromBody] TransakcijaCreationDto transakcija)
         {
-            try
-            { 
+            //try
+            //{ 
                Transakcija tr = mapper.Map<Transakcija>(transakcija);
-               TransakcijaConfirmation confirmation = transakcijaRepository.CreateTransakcija(tr);
-               transakcijaRepository.SaveChanges();
-               string? location = linkGenerator.GetPathByAction("GetTransakcijaById", "Transakcija", new { transakcijaId = confirmation.TransakcijaId });
-               return Ok(tr);
-            }
+                var porudzbina = tr.PorudzbinaId;
+                var porudzbine = transakcijaRepository.GetAllPorudzbinaId();
+                if(porudzbine.Contains(porudzbina))
+                {
+                    TransakcijaConfirmation confirmation = transakcijaRepository.CreateTransakcija(tr);
+                    transakcijaRepository.SaveChanges();
+                    //string? location = linkGenerator.GetPathByAction("GetTransakcijaById", "Transakcija", new { transakcijaId = confirmation.TransakcijaId });
+                    return Ok(tr);
+                }
+                else
+                {
+                    return NotFound("Porudzbina koju zelite da proslijedite kao strani kljuc nije pronadjena u bazi!");
+                }
+            /*}
             catch(Microsoft.EntityFrameworkCore.DbUpdateException)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Transakcija koja se odnosi na porudzbinu sa proslijedjenim id-em je vec kreirana, ili porudbzina ne postoji u bazi!");
@@ -75,7 +84,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             catch
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom kreiranja transakcije");
-            }
+            }*/
         }
 
         [HttpDelete("{id}")]
@@ -84,8 +93,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult DeleteTransakcija(int id)
         {
-            try
-            {
+            //try
+            //{
                 var transakcijaModel = transakcijaRepository.GetTransakcijaById(id);
                 if (transakcijaModel == null)
                 {
@@ -94,7 +103,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                 transakcijaRepository.DeleteTransakcija(id);
                 transakcijaRepository.SaveChanges();
                 return NoContent();
-            }
+            /*}
             catch (Microsoft.EntityFrameworkCore.DbUpdateException)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Transakcija koja se odnosi na porudzbinu sa proslijedjenim id-em je vec kreirana, ili porudbzina ne postoji u bazi!");
@@ -102,7 +111,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             catch
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom brisanja transakcije");
-            }
+            }*/
         }
         [HttpPut]
         [Consumes("application/json")]
@@ -113,15 +122,24 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         {
             try
             {
-            var staraTransakcija = transakcijaRepository.GetTransakcijaById(transakcija.TransakcijaId);
-            if (staraTransakcija == null)
-            {
-                return NotFound("Transakcija sa proslijedjenim id-em nije pronadjena.");
-            }
-            Transakcija tr = mapper.Map<Transakcija>(transakcija);
-            mapper.Map(tr, staraTransakcija);
-            transakcijaRepository.SaveChanges();
-            return Ok(mapper.Map<TransakcijaDto>(staraTransakcija));
+                var staraTransakcija = transakcijaRepository.GetTransakcijaById(transakcija.TransakcijaId);
+                if (staraTransakcija == null)
+                {
+                    return NotFound("Transakcija sa proslijedjenim id-em nije pronadjena.");
+                }
+                Transakcija tr = mapper.Map<Transakcija>(transakcija);
+                var porudzbina = tr.PorudzbinaId;
+                var porudzbine = transakcijaRepository.GetAllPorudzbinaId();
+                if(porudzbine.Contains(porudzbina))
+                {
+                    mapper.Map(tr, staraTransakcija);
+                    transakcijaRepository.SaveChanges();
+                    return Ok(mapper.Map<TransakcijaDto>(staraTransakcija));
+                }
+                else
+                {
+                    return NotFound("Porudzbina koju zelite da proslijedite kao strani kljuc nije pronadjena!");
+                }
             }
             catch (Exception)
             {
@@ -129,7 +147,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             }
         }
 
-        private List<int> GetAllPorudzbinaId()
+        /*private List<int> GetAllPorudzbinaId()
         {
             List<int> porudzbine;
             string connStr = @"Data Source=DESKTOP-RCH3286\SQLEXPRESS01;Initial Catalog=Cvijecara;Integrated Security=True;TrustServerCertificate=True";
@@ -144,7 +162,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             return porudzbine;
         }
 
-        private List<T> GetList<T>(IDataReader reader)
+        /*private List<T> GetList<T>(IDataReader reader)
         {
             List<T> list = new List<T>();
             while(reader.Read())
@@ -159,6 +177,6 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                 list.Add(obj);
             }
             return list;
-        }
+        }*/
     }
 }

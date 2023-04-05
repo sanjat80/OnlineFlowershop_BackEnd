@@ -6,12 +6,13 @@ using Cvijecara_Sanja_Tica_IT80_2019.Models.KategorijaModel;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.PorudzbinaModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
 {
     [ApiController]
     [Route("api/porudzbine")]
-    [Consumes("application/json","application/xml")]
+    [Produces("application/json","application/xml")]
     public class PorudzbinaController:ControllerBase
     {
         private readonly IPorudzbinaRepository porudzbinaRepository;
@@ -59,18 +60,18 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<PorudzbinaConfirmationDto> CreatePorudzbina([FromBody] PorudzbinaCreationDto porudzbina)
         {
-            //try
-            //{
-            Porudzbina por = mapper.Map<Porudzbina>(porudzbina);
-            PorudzbinaConfirmation confirmation = porudzbinaRepository.CreatePorudzbina(por);
-            porudzbinaRepository.SaveChanges();
-            //string? location = linkGenerator.GetPathByAction("GetTipKorisnikaById", "TipKorisnika", new { tipId = confirmation.TipId });
-            return Ok(por);
-            /*}
+            try
+            {
+                Porudzbina por = mapper.Map<Porudzbina>(porudzbina);
+                PorudzbinaConfirmation confirmation = porudzbinaRepository.CreatePorudzbina(por);
+                porudzbinaRepository.SaveChanges();
+                //string? location = linkGenerator.GetPathByAction("GetTipKorisnikaById", "TipKorisnika", new { tipId = confirmation.TipId });
+                return Ok(por);
+            }
             catch
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom kreiranja pakovanja");
-            }*/
+            }
         }
 
         [HttpDelete("{id}")]
@@ -122,5 +123,41 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom azuriranja kategorije.");
             }
         }
+
+        [HttpGet("racun/{porudzbinaId}")]
+        public ActionResult<decimal> GetRacunByPorudzbinaId(int porudzbinaId)
+        {
+            try
+            {
+                var racun = porudzbinaRepository.GetRacunPorudzbineByPorudzbinaId(porudzbinaId);
+                if (racun == 0)
+                {
+                    return NotFound("Za porudzbinu jos uvijek nije evidentiran racun.");
+                }
+                return Ok(racun);
+            }
+            catch(System.InvalidOperationException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Jos nije evidentiran racun za datu porudzbinu.");
+            }
+        }
+        [HttpGet("popust/{porudzbinaId}")]
+        public ActionResult<decimal> GetPopustNaPorudzbinuByPorudzbinaId(int porudzbinaId)
+        {
+            try
+            {
+                var popust = porudzbinaRepository.GetPopustNaPorudzbinuByPorudzbinaId(porudzbinaId);
+                if (popust == 0)
+                {
+                    return NotFound("Za porudzbinu jos uvijek nije evidentiran popust.");
+                }
+                return Ok(popust);
+            }
+            catch (System.InvalidOperationException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Jos nije evidentiran popust za datu porudzbinu.");
+            }
+        }
+
     }
 }

@@ -10,5 +10,6 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.TransakcijaData
         void UpdateTransakcija(Transakcija transakcija);
         void DeleteTransakcija(int id);
         bool SaveChanges();
+        public List<int> GetAllPorudzbinaId();
     }
 }
