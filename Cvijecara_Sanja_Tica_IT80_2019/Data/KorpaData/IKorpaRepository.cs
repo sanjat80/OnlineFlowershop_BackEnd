@@ -12,5 +12,6 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorpaData
         void DeleteKorpa(int id);
         bool SaveChanges();
         List<string> GetStavkeKorpeByKorpaId(int korpaId);
+        public List<int> GetAllKorisnikId();
     }
 }

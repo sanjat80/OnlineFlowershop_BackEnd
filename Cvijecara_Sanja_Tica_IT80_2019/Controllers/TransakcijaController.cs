@@ -60,8 +60,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<TransakcijaConfirmationDto> CreateTransakcija([FromBody] TransakcijaCreationDto transakcija)
         {
-            //try
-            //{ 
+            try
+            { 
                Transakcija tr = mapper.Map<Transakcija>(transakcija);
                 var porudzbina = tr.PorudzbinaId;
                 var porudzbine = transakcijaRepository.GetAllPorudzbinaId();
@@ -70,13 +70,13 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                     TransakcijaConfirmation confirmation = transakcijaRepository.CreateTransakcija(tr);
                     transakcijaRepository.SaveChanges();
                     //string? location = linkGenerator.GetPathByAction("GetTransakcijaById", "Transakcija", new { transakcijaId = confirmation.TransakcijaId });
-                    return Ok(tr);
+                    return Ok(confirmation);
                 }
                 else
                 {
-                    return NotFound("Porudzbina koju zelite da proslijedite kao strani kljuc nije pronadjena u bazi!");
+                    return BadRequest("Porudzbina koju zelite da proslijedite kao strani kljuc nije pronadjena u bazi!");
                 }
-            /*}
+            }
             catch(Microsoft.EntityFrameworkCore.DbUpdateException)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Transakcija koja se odnosi na porudzbinu sa proslijedjenim id-em je vec kreirana, ili porudbzina ne postoji u bazi!");
@@ -84,7 +84,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             catch
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom kreiranja transakcije");
-            }*/
+            }
         }
 
         [HttpDelete("{id}")]
@@ -93,8 +93,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult DeleteTransakcija(int id)
         {
-            //try
-            //{
+            try
+            {
                 var transakcijaModel = transakcijaRepository.GetTransakcijaById(id);
                 if (transakcijaModel == null)
                 {
@@ -103,7 +103,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                 transakcijaRepository.DeleteTransakcija(id);
                 transakcijaRepository.SaveChanges();
                 return NoContent();
-            /*}
+            }
             catch (Microsoft.EntityFrameworkCore.DbUpdateException)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Transakcija koja se odnosi na porudzbinu sa proslijedjenim id-em je vec kreirana, ili porudbzina ne postoji u bazi!");
@@ -111,7 +111,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             catch
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom brisanja transakcije");
-            }*/
+            }
         }
         [HttpPut]
         [Consumes("application/json")]
@@ -138,7 +138,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                 }
                 else
                 {
-                    return NotFound("Porudzbina koju zelite da proslijedite kao strani kljuc nije pronadjena!");
+                    return BadRequest("Porudzbina koju zelite da proslijedite kao strani kljuc nije pronadjena!");
                 }
             }
             catch (Exception)

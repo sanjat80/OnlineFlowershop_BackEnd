@@ -66,7 +66,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                 PorudzbinaConfirmation confirmation = porudzbinaRepository.CreatePorudzbina(por);
                 porudzbinaRepository.SaveChanges();
                 //string? location = linkGenerator.GetPathByAction("GetTipKorisnikaById", "TipKorisnika", new { tipId = confirmation.TipId });
-                return Ok(por);
+                return Ok(confirmation);
             }
             catch
             {

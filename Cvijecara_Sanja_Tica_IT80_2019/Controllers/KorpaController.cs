@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Cvijecara_Sanja_Tica_IT80_2019.Data.KorisnikData;
 using Cvijecara_Sanja_Tica_IT80_2019.Data.KorpaData;
+using Cvijecara_Sanja_Tica_IT80_2019.Data.ValidationData;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.KorisnikModel;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.KorpaModel;
@@ -18,12 +19,14 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         private readonly IKorpaRepository korpaRepository;
         private readonly LinkGenerator linkGenerator;
         private readonly IMapper mapper;
+        private readonly IValidationRepository validationRepository;
 
-        public KorpaController(IKorpaRepository korpaRepository, LinkGenerator linkGenerator, IMapper mapper)
+        public KorpaController(IKorpaRepository korpaRepository, LinkGenerator linkGenerator, IMapper mapper,IValidationRepository validationRepository)
         {
             this.korpaRepository = korpaRepository;
             this.linkGenerator = linkGenerator;
             this.mapper = mapper;
+            this.validationRepository = validationRepository;
         }
 
         [HttpGet]
@@ -42,7 +45,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [Authorize(Roles ="registrovani")]
+        [Authorize(Roles ="registrovani,admin")]
         public ActionResult<KorpaDto> GetKorpaById(int id)
         {
             var korpa = korpaRepository.GetKorpaById(id);
@@ -61,11 +64,31 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         {
             try
             {
-                Korpa basket = mapper.Map<Korpa>(korpa);
-                KorpaConfirmation confirmation = korpaRepository.CreateKorpa(basket);
-                korpaRepository.SaveChanges();
-                //string? location = linkGenerator.GetPathByAction("GetKorisnikById", "Korisnik", new { korisnikId = confirmation.KorisnikId });
-                return Ok(basket);
+                if(ModelState.IsValid)
+                {
+                    if(!validationRepository.ValidateValuta(korpa.Valuta))
+                    {
+                        return BadRequest("Valuta mora biti neka od 3 dozvoljene: RSD,EUR,BAM i to duzine 3 karaktera.");
+                    }
+                    Korpa basket = mapper.Map<Korpa>(korpa);
+                    var korisnik = basket.KorisnikId;
+                    List<int> korisnici = korpaRepository.GetAllKorisnikId();
+                    if (korisnici.Contains(korisnik))
+                    {
+                        KorpaConfirmation confirmation = korpaRepository.CreateKorpa(basket);
+                        korpaRepository.SaveChanges();
+                        return Ok(confirmation);
+                    }
+                    else
+                    {
+                        return BadRequest("Korisnik ciji id zelite da navedete kao vlasnika korpe nije pronadjen!");
+                    }
+                }
+                else
+                {
+                    return BadRequest(ModelState);
+                }
+                
             }
             catch (Microsoft.EntityFrameworkCore.DbUpdateException)
             {
@@ -108,15 +131,35 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         {
             try
             {
-            var staraKorpa = korpaRepository.GetKorpaById(korpa.KorpaId);
-            if (staraKorpa == null)
-            {
-                return NotFound("Korpa sa proslijedjenim id-em nije pronadjena.");
-            }
-            Korpa basket = mapper.Map<Korpa>(korpa);
-            mapper.Map(basket, staraKorpa);
-            korpaRepository.SaveChanges();
-            return Ok(mapper.Map<KorpaDto>(staraKorpa));
+                if(ModelState.IsValid)
+                {
+                    if(!validationRepository.ValidateValuta(korpa.Valuta))
+                    {
+                        return BadRequest("Valuta mora biti neka od 3 dozvoljene: RSD,EUR,BAM i to duzine 3 karaktera.");
+                    }
+                    var staraKorpa = korpaRepository.GetKorpaById(korpa.KorpaId);
+                    if (staraKorpa == null)
+                    {
+                        return NotFound("Korpa sa proslijedjenim id-em nije pronadjena.");
+                    }
+                    Korpa basket = mapper.Map<Korpa>(korpa);
+                    var korisnik = basket.KorisnikId;
+                    var korisnici = korpaRepository.GetAllKorisnikId();
+                    if (korisnici.Contains(korisnik))
+                    {
+                        mapper.Map(basket, staraKorpa);
+                        korpaRepository.SaveChanges();
+                        return Ok(mapper.Map<KorpaDto>(staraKorpa));
+                    }
+                    else
+                    {
+                        return BadRequest("Korisnik kog zelite da navedete kao vlasnika korpe nije pronadjen!");
+                    }
+                }
+                else
+                {
+                    return BadRequest(ModelState);
+                }
             }
             catch (Exception)
             {

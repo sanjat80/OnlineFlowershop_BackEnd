@@ -12,7 +12,7 @@ public partial class Korpa
     public int Kolicina { get; set; }
 
     public decimal UkupanIznos { get; set; }
-
+    [MaxLength(5)]
     public string Valuta { get; set; } = null!;
 
     public int KorisnikId { get; set; }

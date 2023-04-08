@@ -73,7 +73,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                 }
                 else
                 {
-                    return NotFound("Porudzbina koju zelite da proslijedite kao strani kljuc nije pronadjena u bazi!");
+                    return BadRequest("Porudzbina koju zelite da proslijedite kao strani kljuc nije pronadjena u bazi!");
                 }
             }
             catch(Microsoft.EntityFrameworkCore.DbUpdateException)
@@ -91,7 +91,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult DeleteKategorija(int id)
+        public IActionResult DeleteDetaljiIsporuke(int id)
         {
             try
             {
@@ -139,7 +139,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                 }
                 else
                 {
-                    return NotFound("Porudzbina koju zelite da proslijedite kao strani kljuc nije pronadjena u bazi!");
+                    return BadRequest("Porudzbina koju zelite da proslijedite kao strani kljuc nije pronadjena u bazi!");
                 }
             }
             catch (Exception)

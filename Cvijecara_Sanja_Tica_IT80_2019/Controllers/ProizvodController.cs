@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Cvijecara_Sanja_Tica_IT80_2019.Data.PorudzbinaData;
 using Cvijecara_Sanja_Tica_IT80_2019.Data.ProizvodData;
+using Cvijecara_Sanja_Tica_IT80_2019.Data.ValidationData;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.PorudzbinaModel;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.ProizvodModel;
@@ -17,12 +18,14 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         private readonly IProizvodRepository proizvodRepository;
         private readonly LinkGenerator linkGenerator;
         private readonly IMapper mapper;
+        private readonly IValidationRepository validationRepository;
 
-        public ProizvodController(IProizvodRepository proizvodRepository,LinkGenerator linkGenerator,IMapper mapper)
+        public ProizvodController(IProizvodRepository proizvodRepository,LinkGenerator linkGenerator,IMapper mapper, IValidationRepository validationRepository)
         {
             this.proizvodRepository = proizvodRepository;
             this.linkGenerator = linkGenerator;
             this.mapper = mapper;
+            this.validationRepository = validationRepository;
         }
 
         [HttpGet]
@@ -60,11 +63,22 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         {
             try
             {
-            Proizvod product = mapper.Map<Proizvod>(proizvod);
-            ProizvodConfirmation confirmation = proizvodRepository.CreateProizvod(product);
-            proizvodRepository.SaveChanges();
-            //string? location = linkGenerator.GetPathByAction("GetProizvodById", "Proizvod", new { proizvodId = confirmation.ProizvodId });
-            return Ok(product);
+                if(ModelState.IsValid)
+                {
+                    if(!validationRepository.ValidateValuta(proizvod.Valuta))
+                    {
+                        return BadRequest("Valuta mora biti neka od 3 dozvoljene: RSD,EUR,BAM i to duzine 3 karaktera.");
+                    }
+                    Proizvod product = mapper.Map<Proizvod>(proizvod);
+                    ProizvodConfirmation confirmation = proizvodRepository.CreateProizvod(product);
+                    proizvodRepository.SaveChanges();
+                    //string? location = linkGenerator.GetPathByAction("GetProizvodById", "Proizvod", new { proizvodId = confirmation.ProizvodId });
+                    return Ok(product);
+                }
+                else
+                {
+                    return BadRequest(ModelState);
+                }
             }
             catch
             {
@@ -81,6 +95,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         {
             try
             {
+
                 var proizvodModel = proizvodRepository.GetProizvodById(id);
                 if (proizvodModel == null)
                 {
@@ -110,15 +125,26 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         {
             try
             {
-            var stariProizvod = proizvodRepository.GetProizvodById(proizvod.ProizvodId);
-            if (stariProizvod == null)
-            {
-                return NotFound("Proizvod sa proslijedjenim id-em nije pronadjen.");
-            }
-            Proizvod product = mapper.Map<Proizvod>(proizvod);
-            mapper.Map(product, stariProizvod);
-            proizvodRepository.SaveChanges();
-            return Ok(mapper.Map<ProizvodDto>(stariProizvod));
+                if (ModelState.IsValid)
+                {
+                    if(!validationRepository.ValidateValuta(proizvod.Valuta))
+                    {
+                        return BadRequest("Valuta mora biti neka od 3 dozvoljene: RSD,EUR,BAM i to duzine 3 karaktera.");
+                    }
+                    var stariProizvod = proizvodRepository.GetProizvodById(proizvod.ProizvodId);
+                    if (stariProizvod == null)
+                    {
+                        return NotFound("Proizvod sa proslijedjenim id-em nije pronadjen.");
+                    }
+                    Proizvod product = mapper.Map<Proizvod>(proizvod);
+                    mapper.Map(product, stariProizvod);
+                    proizvodRepository.SaveChanges();
+                    return Ok(mapper.Map<ProizvodDto>(stariProizvod));
+                }
+                else
+                {
+                    return BadRequest(ModelState);
+                }
             }
             catch (Microsoft.EntityFrameworkCore.DbUpdateException)
             {

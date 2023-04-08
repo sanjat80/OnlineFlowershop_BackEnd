@@ -63,7 +63,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             KategorijaConfirmation confirmation = kategorijaRepository.CreateKategorija(kat);
             kategorijaRepository.SaveChanges();
             //string? location = linkGenerator.GetPathByAction("GetTipKorisnikaById", "TipKorisnika", new { tipId = confirmation.TipId });
-            return Ok(kat);
+            return Ok(confirmation);
             /*}
             catch
             {

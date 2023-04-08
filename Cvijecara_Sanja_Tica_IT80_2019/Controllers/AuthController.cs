@@ -71,7 +71,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                 user.StatusKorisnika = "aktivan";
                 KorisnikConfirmation confirmation = _korisnikRepository.CreateKorisnik(user);
                 _korisnikRepository.SaveChanges();
-                return Ok(user);
+                return Ok(korisnik);
             }
             catch (Microsoft.EntityFrameworkCore.DbUpdateException)
             {

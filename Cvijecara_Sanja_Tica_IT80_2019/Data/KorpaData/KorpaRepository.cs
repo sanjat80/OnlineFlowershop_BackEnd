@@ -57,5 +57,16 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorpaData
                 return naziviProizvoda.ToList();
             }
         }
+
+        public List<int> GetAllKorisnikId()
+        {
+            using (var context = new CvijecaraContext())
+            {
+                var korisnici = from k in context.Korisniks
+                                select k.KorisnikId;
+
+                return korisnici.ToList();
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Cvijecara_Sanja_Tica_IT80_2019.Data.KategorijaData;
 using Cvijecara_Sanja_Tica_IT80_2019.Data.KorisnikData;
+using Cvijecara_Sanja_Tica_IT80_2019.Data.ValidationData;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.KategorijaModel;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.KorisnikModel;
@@ -18,12 +19,13 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         private readonly IKorisnikRepository korisnikRepository;
         private readonly LinkGenerator linkGenerator;
         private readonly IMapper mapper;
-
-        public KorisnikController(IKorisnikRepository korisnikRepository,LinkGenerator linkGenerator, IMapper mapper)
+        private readonly IValidationRepository validationRepository;
+        public KorisnikController(IKorisnikRepository korisnikRepository, LinkGenerator linkGenerator, IMapper mapper, IValidationRepository validationRepository)
         {
             this.korisnikRepository = korisnikRepository;
             this.linkGenerator = linkGenerator;
             this.mapper = mapper;
+            this.validationRepository = validationRepository;
         }
 
         [HttpGet]
@@ -60,14 +62,25 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         {
             try
             {
-             string? lozinka = korisnik.Lozinka;
-             string lozinka2 = BCrypt.Net.BCrypt.HashPassword(lozinka);
-             korisnik.Lozinka = lozinka2;
-             Korisnik user = mapper.Map<Korisnik>(korisnik);
-             KorisnikConfirmation confirmation = korisnikRepository.CreateKorisnik(user);
-             korisnikRepository.SaveChanges();
-            //string? location = linkGenerator.GetPathByAction("GetKorisnikById", "Korisnik", new { korisnikId = confirmation.KorisnikId });
-             return Ok(user);
+                if(ModelState.IsValid)
+                {
+                    if (!validationRepository.IsValidEmail(korisnik.Email))
+                    {
+                        return BadRequest("Email nije unesen u ispravnom formatu (npr) : john.doe@example.com!");
+                    }
+                    string? lozinka = korisnik.Lozinka;
+                    string lozinka2 = BCrypt.Net.BCrypt.HashPassword(lozinka);
+                    korisnik.Lozinka = lozinka2;
+                    Korisnik user = mapper.Map<Korisnik>(korisnik);
+                    KorisnikConfirmation confirmation = korisnikRepository.CreateKorisnik(user);
+                    korisnikRepository.SaveChanges();
+                    //string? location = linkGenerator.GetPathByAction("GetKorisnikById", "Korisnik", new { korisnikId = confirmation.KorisnikId });
+                    return Ok(confirmation);
+                }
+                else
+                {
+                    return BadRequest(ModelState);
+                }
             }
             catch(Microsoft.EntityFrameworkCore.DbUpdateException)
             {
@@ -114,15 +127,26 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         {
             try
             {
-                var stariKorisnik = korisnikRepository.GetKorisnikById(korisnik.KorisnikId);
-                if (stariKorisnik == null)
+                if(ModelState.IsValid)
                 {
-                    return NotFound("Korisnik sa proslijedjenim id-em nije pronadjen.");
+                    if(!validationRepository.IsValidEmail(korisnik.Email))
+                    {
+                        return BadRequest("Email nije unesen u ispravnom formatu (npr) : john.doe@example.com!");
+                    }
+                    var stariKorisnik = korisnikRepository.GetKorisnikById(korisnik.KorisnikId);
+                    if (stariKorisnik == null)
+                    {
+                        return NotFound("Korisnik sa proslijedjenim id-em nije pronadjen.");
+                    }
+                    Korisnik user = mapper.Map<Korisnik>(korisnik);
+                    mapper.Map(user, stariKorisnik);
+                    korisnikRepository.SaveChanges();
+                    return Ok(mapper.Map<KorisnikDto>(stariKorisnik));
                 }
-                Korisnik user = mapper.Map<Korisnik>(korisnik);
-                mapper.Map(user, stariKorisnik);
-                korisnikRepository.SaveChanges();
-                return Ok(mapper.Map<KorisnikDto>(stariKorisnik));
+                else
+                {
+                    return BadRequest(ModelState);
+                }
             }
             catch (Exception)
             {
