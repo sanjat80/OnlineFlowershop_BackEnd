@@ -68,7 +68,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             }
             catch (Microsoft.EntityFrameworkCore.DbUpdateException)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Korisnik koji je naveden kao vlasnik korpe je vec vlasnik neke druge korpe!");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Primarni kljuc vec postoji u bazi!");
             }
             catch
             {
