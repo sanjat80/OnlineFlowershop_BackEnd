@@ -3,6 +3,7 @@ using Cvijecara_Sanja_Tica_IT80_2019.Data.PakovanjeData;
 using Cvijecara_Sanja_Tica_IT80_2019.Data.TipKorisnikaData;
 using Cvijecara_Sanja_Tica_IT80_2019.Data.ValidationData;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
+using Cvijecara_Sanja_Tica_IT80_2019.Models.KategorijaModel;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.PakovanjeModel;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.TipKorisnikaModel;
 using Microsoft.AspNetCore.Authorization;
@@ -74,7 +75,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                     PakovanjeConfirmation confirmation = pakovanjeRepository.CreatePakovanje(pak);
                     pakovanjeRepository.SaveChanges();
                     //string? location = linkGenerator.GetPathByAction("GetTipKorisnikaById", "TipKorisnika", new { tipId = confirmation.TipId });
-                    return Ok(confirmation);
+                    return Ok(mapper.Map<PakovanjeDto>(pak));
                 } else
                 {
                     return BadRequest(ModelState);

@@ -4,5 +4,7 @@
     {
         public bool ValidateValuta(string valuta);
         public bool IsValidEmail(string email);
+        public bool ValidatePassword(string password);
+        public bool ValidateDatumIsporuke(DateTime date);
     }
 }

@@ -57,18 +57,18 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<KategorijaConfirmationDto> CreateKategorija([FromBody] KategorijaCreationDto kategorija)
         {
-            //try
-            //{
-            Kategorija kat = mapper.Map<Kategorija>(kategorija);
-            KategorijaConfirmation confirmation = kategorijaRepository.CreateKategorija(kat);
-            kategorijaRepository.SaveChanges();
-            //string? location = linkGenerator.GetPathByAction("GetTipKorisnikaById", "TipKorisnika", new { tipId = confirmation.TipId });
-            return Ok(confirmation);
-            /*}
+            try
+            {
+                Kategorija kat = mapper.Map<Kategorija>(kategorija);
+                KategorijaConfirmation confirmation = kategorijaRepository.CreateKategorija(kat);
+                kategorijaRepository.SaveChanges();
+                //string? location = linkGenerator.GetPathByAction("GetTipKorisnikaById", "TipKorisnika", new { tipId = confirmation.TipId });
+                return Ok(mapper.Map<KategorijaDto>(kat));
+            }
             catch
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom kreiranja pakovanja");
-            }*/
+            }
         }
 
         [HttpDelete("{id}")]

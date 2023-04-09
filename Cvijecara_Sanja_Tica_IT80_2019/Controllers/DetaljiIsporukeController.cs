@@ -2,6 +2,7 @@
 using Cvijecara_Sanja_Tica_IT80_2019.Data.DetaljiIsporukeData;
 using Cvijecara_Sanja_Tica_IT80_2019.Data.KategorijaData;
 using Cvijecara_Sanja_Tica_IT80_2019.Data.PorudzbinaData;
+using Cvijecara_Sanja_Tica_IT80_2019.Data.ValidationData;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.DetaljiIsporukeModel;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.KategorijaModel;
@@ -18,16 +19,19 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         private readonly IDetaljiIsporukeRepository detaljiIsporukeRepository;
         private readonly LinkGenerator linkGenerator;
         private readonly IMapper mapper;
+        private readonly IValidationRepository validationRepository;
   
-        public DetaljiIsporukeController(IDetaljiIsporukeRepository detaljiIsporukeRepository,LinkGenerator linkGenerator,IMapper mapper)
+        public DetaljiIsporukeController(IDetaljiIsporukeRepository detaljiIsporukeRepository,LinkGenerator linkGenerator,IMapper mapper,IValidationRepository validationRepository)
         {
             this.detaljiIsporukeRepository = detaljiIsporukeRepository;
             this.linkGenerator = linkGenerator;
             this.mapper = mapper;
+            this.validationRepository = validationRepository;
         }
 
         [HttpGet]
         [HttpHead]
+        [Authorize(Roles ="admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult<List<DetaljiIsporukeDto>> GetAllDetaljiIsporuke()
@@ -40,6 +44,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             return Ok(mapper.Map<List<DetaljiIsporukeDto>>(detalji));
         }
         [HttpGet("{id}")]
+        [Authorize(Roles ="admin,registrovani")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<DetaljiIsporukeDto> GetDetaljiIsporukeById(int id)
@@ -61,19 +66,30 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         {
             try
             {
-                DetaljiIsporuke detalji = mapper.Map<DetaljiIsporuke>(detaljiIsporuke);
-                var porudzbina = detalji.PorudzbinaId;
-                List<int> porudzbine = detaljiIsporukeRepository.GetAllPorudzbinaId();
-                if (porudzbine.Contains(porudzbina))
-               {
-                    DetaljiIsporukeConfirmation confirmation = detaljiIsporukeRepository.CreateDetaljiIsporuke(detalji);
-                    detaljiIsporukeRepository.SaveChanges();
-                    //string? location = linkGenerator.GetPathByAction("GetDetaljiIsporukeById", "DetaljiIsporukeController", new { detaljiId = confirmation.IsporukaId });
-                    return Ok(detalji);
+                if(ModelState.IsValid)
+                {
+                    if(!validationRepository.ValidateDatumIsporuke((DateTime)detaljiIsporuke.DatumIsporuke))
+                    {
+                        return BadRequest("Datum isporuke ne moze biti danasnji datum, potrebno je navesti datum makar za jedan dan udaljen od danasnjeg!");
+                    }
+                    DetaljiIsporuke detalji = mapper.Map<DetaljiIsporuke>(detaljiIsporuke);
+                    var porudzbina = detalji.PorudzbinaId;
+                    List<int> porudzbine = detaljiIsporukeRepository.GetAllPorudzbinaId();
+                    if (porudzbine.Contains(porudzbina))
+                    {
+                        DetaljiIsporukeConfirmation confirmation = detaljiIsporukeRepository.CreateDetaljiIsporuke(detalji);
+                        detaljiIsporukeRepository.SaveChanges();
+                        //string? location = linkGenerator.GetPathByAction("GetDetaljiIsporukeById", "DetaljiIsporukeController", new { detaljiId = confirmation.IsporukaId });
+                        return Ok(mapper.Map<DetaljiIsporukeDto>(detalji));
+                    }
+                    else
+                    {
+                        return BadRequest("Porudzbina koju zelite da proslijedite kao strani kljuc nije pronadjena u bazi!");
+                    }
                 }
                 else
                 {
-                    return BadRequest("Porudzbina koju zelite da proslijedite kao strani kljuc nije pronadjena u bazi!");
+                    return BadRequest(ModelState);
                 }
             }
             catch(Microsoft.EntityFrameworkCore.DbUpdateException)

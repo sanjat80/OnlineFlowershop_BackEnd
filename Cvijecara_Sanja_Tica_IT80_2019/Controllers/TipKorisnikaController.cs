@@ -50,7 +50,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             }
             return Ok(mapper.Map<TipKorisnikaDto>(tip));
         }
-        [HttpPost]
+        /*[HttpPost]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -68,7 +68,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom kreiranja tipa korisnika.");
             } 
-        }
+        }*/
 
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

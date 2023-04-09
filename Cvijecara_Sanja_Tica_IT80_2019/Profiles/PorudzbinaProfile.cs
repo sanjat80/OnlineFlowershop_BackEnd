@@ -13,6 +13,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Profiles
             CreateMap<PorudzbinaUpdateDto, Porudzbina>();
             CreateMap<PorudzbinaCreationDto, Porudzbina>();
             CreateMap<Porudzbina, PorudzbinaDto>();
+            CreateMap<PorudzbinaDto, Porudzbina>();
             CreateMap<PorudzbinaConfirmation, Porudzbina>();
             CreateMap<Porudzbina, PorudzbinaConfirmation>();
             CreateMap<Porudzbina, PorudzbinaConfirmationDto>();

@@ -30,7 +30,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorisnikData
 
         public List<Korisnik> GetAllKorisnik()
         {
-            return context.Korisniks.ToList();
+            return context.Korisniks.Include(t=> t.Tip).ToList();
         }
 
         public Korisnik GetKorisnikById(int id)
@@ -52,5 +52,10 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorisnikData
         {
             return context.Korisniks.FirstOrDefault(ki => ki.KorisnickoIme == korisnickoIme);
         }
+
+        /*public string GetTipKorisnikaByTipId()
+        {
+            var tip = 
+        }*/
     }
 }

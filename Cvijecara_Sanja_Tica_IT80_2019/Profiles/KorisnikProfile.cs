@@ -14,12 +14,16 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Profiles
             CreateMap<KorisnikUpdateDto, Korisnik>();
             CreateMap<KorisnikCreationDto, Korisnik>();
             CreateMap<KorisnikRegistrationDto, Korisnik>();
+            CreateMap<Korisnik, KorisnikRegistrationDto>();
             CreateMap<Korisnik, Korisnik>();
             CreateMap<KorisnikConfirmation, Korisnik>();
             CreateMap<Korisnik, KorisnikConfirmation>();
             CreateMap<Korisnik, KorisnikConfirmationDto>();
             CreateMap<KorisnikConfirmationDto, Korisnik>();
             CreateMap<KorisnikConfirmation, KorisnikConfirmationDto>();
+            CreateMap<Korisnik, TipKorisnika>().ForMember(dest => dest.Tip, opt => opt.MapFrom(src => src.Tip.Tip));
+            CreateMap<KorisnikUpdateRegistrationDto, Korisnik>();
+            CreateMap<Korisnik, KorisnikUpdateRegistrationDto>();
         }
     }
 }

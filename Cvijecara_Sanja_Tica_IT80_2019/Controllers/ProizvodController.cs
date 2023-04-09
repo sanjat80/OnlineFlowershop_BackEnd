@@ -73,7 +73,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                     ProizvodConfirmation confirmation = proizvodRepository.CreateProizvod(product);
                     proizvodRepository.SaveChanges();
                     //string? location = linkGenerator.GetPathByAction("GetProizvodById", "Proizvod", new { proizvodId = confirmation.ProizvodId });
-                    return Ok(product);
+                    return Ok(mapper.Map<ProizvodDto>(product));
                 }
                 else
                 {

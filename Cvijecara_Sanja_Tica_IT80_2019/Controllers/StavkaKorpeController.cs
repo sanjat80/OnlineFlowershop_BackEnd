@@ -25,6 +25,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
 
         [HttpGet]
         [HttpHead]
+        [Authorize(Roles ="admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult<List<StavkaKorpeDto>> GetAllStavkaKorpe()
@@ -52,6 +53,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
 
         [HttpPost]
         [Consumes("application/json")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<StavkaKorpeConfirmationDto> CreateStavkaKorpe([FromBody] StavkaKorpeCreationDto stavkaKorpe)
@@ -62,7 +64,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                 StavkaKorpeConfirmation confirmation = stavkaKorpeRepository.CreateStavkaKorpe(stavka);
                 stavkaKorpeRepository.SaveChanges();
                 //string? location = linkGenerator.GetPathByAction("GetKorisnikById", "Korisnik", new { korisnikId = confirmation.KorisnikId });
-                return Ok(confirmation);
+                return Ok(mapper.Map<StavkaKorpeDto>(stavka));
             }
             catch (Microsoft.EntityFrameworkCore.DbUpdateException)
             {
@@ -75,6 +77,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
 
         [HttpDelete("{proizvodId}/{korpaId}")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -98,6 +101,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
         [HttpPut]
         [Consumes("application/json")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

@@ -24,5 +24,54 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.ValidationData
             bool isValid = Regex.IsMatch(email, pattern);
             return isValid;
         }
+
+        public bool ValidatePassword(string password)
+        {
+            // Password must be at least 8 characters long
+            if (password.Length < 8)
+            {
+                return false;
+            }
+
+            // Password must contain at least one uppercase letter
+            if (!Regex.IsMatch(password, "[A-Z]"))
+            {
+                return false;
+            }
+
+            // Password must contain at least one lowercase letter
+            if (!Regex.IsMatch(password, "[a-z]"))
+            {
+                return false;
+            }
+
+            // Password must contain at least one digit
+            if (!Regex.IsMatch(password, "[0-9]"))
+            {
+                return false;
+            }
+
+            // Password must contain at least one special character
+            if (!Regex.IsMatch(password, "[^a-zA-Z0-9]"))
+            {
+                return false;
+            }
+
+            // All password requirements met
+            return true;
+        }
+        public bool ValidateDatumIsporuke(DateTime date)
+        {
+            
+            DateTime currentDate = DateTime.Now.Date;
+            DateTime minDate = currentDate.AddDays(1).Date;
+            if (date.Date <= minDate)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
     }
 }

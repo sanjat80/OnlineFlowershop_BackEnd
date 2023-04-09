@@ -62,7 +62,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             VrstaConfirmation confirmation = vrstaRepository.CreateVrsta(vrs);
             vrstaRepository.SaveChanges();
             //string? location = linkGenerator.GetPathByAction("GetTipKorisnikaById", "TipKorisnika", new { tipId = confirmation.TipId });
-            return Ok(vrs);
+            return Ok(mapper.Map<VrstaDto>(vrs));
             }
             catch
             {

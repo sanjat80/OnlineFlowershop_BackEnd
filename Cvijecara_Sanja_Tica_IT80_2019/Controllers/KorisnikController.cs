@@ -13,7 +13,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
     [ApiController]
     [Route("api/korisnici")]
     [Produces("application/json","application/xml")]
-    [Authorize(Roles ="admin")]
+    //[Authorize(Roles ="admin")]
     public class KorisnikController:ControllerBase
     {
         private readonly IKorisnikRepository korisnikRepository;
@@ -30,6 +30,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
 
         [HttpGet]
         [HttpHead]
+        [Authorize(Roles ="admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult<List<KorisnikDto>> GetAllKorisnik()
@@ -42,6 +43,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             return Ok(mapper.Map<List<KorisnikDto>>(korisnici));
         }
         [HttpGet("{id}")]
+        [ActionName("GetKorisnik")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<KorisnikDto> GetKorisnikById(int id)
@@ -55,6 +57,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles ="admin")]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -68,14 +71,17 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                     {
                         return BadRequest("Email nije unesen u ispravnom formatu (npr) : john.doe@example.com!");
                     }
+                    if(!validationRepository.ValidatePassword(korisnik.Lozinka))
+                    {
+                        return BadRequest("Lozinka nije unesena u dobrom formatu: mora sadrzati bar 8 karaktera, bar jedno veliko i jedno malo slovo, bar jednu cifru i jedan specijalni karakter.");
+                    }
                     string? lozinka = korisnik.Lozinka;
                     string lozinka2 = BCrypt.Net.BCrypt.HashPassword(lozinka);
                     korisnik.Lozinka = lozinka2;
                     Korisnik user = mapper.Map<Korisnik>(korisnik);
                     KorisnikConfirmation confirmation = korisnikRepository.CreateKorisnik(user);
                     korisnikRepository.SaveChanges();
-                    //string? location = linkGenerator.GetPathByAction("GetKorisnikById", "Korisnik", new { korisnikId = confirmation.KorisnikId });
-                    return Ok(confirmation);
+                    return Ok(mapper.Map<KorisnikDto>(user));
                 }
                 else
                 {
@@ -88,11 +94,12 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             }
             catch
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom kreiranja pakovanja");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom kreiranja korisnika.");
             }
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles ="admin,registrovani")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -120,6 +127,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
         [HttpPut]
         [Consumes("application/json")]
+        [Authorize(Roles ="admin")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -132,6 +140,10 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                     if(!validationRepository.IsValidEmail(korisnik.Email))
                     {
                         return BadRequest("Email nije unesen u ispravnom formatu (npr) : john.doe@example.com!");
+                    }
+                    if (!validationRepository.ValidatePassword(korisnik.Lozinka))
+                    {
+                        return BadRequest("Lozinka nije unesena u dobrom formatu: mora sadrzati bar 8 karaktera, bar jedno veliko i jedno malo slovo, bar jednu cifru i jedan specijalni karakter.");
                     }
                     var stariKorisnik = korisnikRepository.GetKorisnikById(korisnik.KorisnikId);
                     if (stariKorisnik == null)
@@ -150,7 +162,53 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom azuriranja kategorije.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom azuriranja korisnika.");
+            }
+        }
+        [HttpPut]
+        [Authorize(Roles ="registrovani")]
+        [Route("/registrovani")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<KorisnikDto> UpdateRegistrovaniKorisnik(KorisnikUpdateRegistrationDto korisnik)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    if (!validationRepository.IsValidEmail(korisnik.Email))
+                    {
+                        return BadRequest("Email nije unesen u ispravnom formatu (npr) : john.doe@example.com!");
+                    }
+                    if (!validationRepository.ValidatePassword(korisnik.Lozinka))
+                    {
+                        return BadRequest("Lozinka nije unesena u dobrom formatu: mora sadrzati bar 8 karaktera, bar jedno veliko i jedno malo slovo, bar jednu cifru i jedan specijalni karakter.");
+                    }
+                    var stariKorisnik = korisnikRepository.GetKorisnikById(korisnik.KorisnikId);
+                    if (stariKorisnik == null)
+                    {
+                        return NotFound("Korisnik sa proslijedjenim id-em nije pronadjen.");
+                    }
+                    string? lozinka = korisnik.Lozinka;
+                    string lozinka2 = BCrypt.Net.BCrypt.HashPassword(lozinka);
+                    korisnik.Lozinka = lozinka2;
+                    Korisnik user = mapper.Map<Korisnik>(korisnik);
+                    user.TipId = 2;
+                    user.StatusKorisnika = "aktivan";
+                    mapper.Map(user, stariKorisnik);
+                    korisnikRepository.SaveChanges();
+                    return Ok(mapper.Map<KorisnikUpdateRegistrationDto>(stariKorisnik));
+                }
+                else
+                {
+                    return BadRequest(ModelState);
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom azuriranja korisnika.");
             }
         }
     }

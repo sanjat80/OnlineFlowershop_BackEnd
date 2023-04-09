@@ -13,6 +13,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Profiles.PakovanjeProfiles
             CreateMap<PakovanjeUpdateDto, Pakovanje>();
             CreateMap<PakovanjeCreationDto, Pakovanje>();
             CreateMap<Pakovanje, Pakovanje>();
+            CreateMap<PakovanjeDto, Pakovanje>();
             CreateMap<PakovanjeConfirmation, Pakovanje>();
             CreateMap<Pakovanje, PakovanjeConfirmation>();
             CreateMap<Pakovanje, PakovanjeConfirmationDto>();

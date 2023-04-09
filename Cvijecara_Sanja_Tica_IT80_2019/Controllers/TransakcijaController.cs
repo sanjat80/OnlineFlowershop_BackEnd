@@ -14,7 +14,6 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
     [ApiController]
     [Route("api/transakcije")]
     [Produces("application/json","application/xml")]
-    [Authorize(Roles ="admin")]
     public class TransakcijaController:ControllerBase
     {
         private readonly ITransakcijaRepository transakcijaRepository;
@@ -30,6 +29,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
 
         [HttpGet]
         [HttpHead]
+        [Authorize(Roles ="admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult<List<TransakcijaDto>> GetAllTransakcija()
@@ -55,6 +55,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -69,8 +70,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                 {
                     TransakcijaConfirmation confirmation = transakcijaRepository.CreateTransakcija(tr);
                     transakcijaRepository.SaveChanges();
-                    //string? location = linkGenerator.GetPathByAction("GetTransakcijaById", "Transakcija", new { transakcijaId = confirmation.TransakcijaId });
-                    return Ok(confirmation);
+                    return Ok(mapper.Map<TransakcijaDto>(tr));
                 }
                 else
                 {
@@ -88,6 +88,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -114,6 +115,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             }
         }
         [HttpPut]
+        [Authorize(Roles = "admin")]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]

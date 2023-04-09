@@ -13,6 +13,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Profiles
             CreateMap<VrstaUpdateDto, Vrstum>();
             CreateMap<VrstaCreationDto, Vrstum>();
             CreateMap<Vrstum, Vrstum>();
+            CreateMap<VrstaDto, Vrstum>();
             CreateMap<VrstaConfirmation, Vrstum>();
             CreateMap<Vrstum, VrstaConfirmation>();
             CreateMap<Vrstum, VrstaConfirmationDto>();

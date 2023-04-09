@@ -13,7 +13,6 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
     [ApiController]
     [Route("api/korpe")]
     [Produces("application/json","application/xml")]
-    [Authorize(Roles ="admin")]
     public class KorpaController:ControllerBase
     {
         private readonly IKorpaRepository korpaRepository;
@@ -31,6 +30,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
 
         [HttpGet]
         [HttpHead]
+        [Authorize(Roles ="admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult<List<KorpaDto>> GetAllKorpa()
@@ -58,6 +58,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
 
         [HttpPost]
         [Consumes("application/json")]
+        [Authorize(Roles ="admin")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<KorpaConfirmationDto> CreateKorpa([FromBody] KorpaCreationDto korpa)
@@ -77,7 +78,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                     {
                         KorpaConfirmation confirmation = korpaRepository.CreateKorpa(basket);
                         korpaRepository.SaveChanges();
-                        return Ok(confirmation);
+                        return Ok(mapper.Map<KorpaDto>(basket));
                     }
                     else
                     {
@@ -101,6 +102,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles ="admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -123,6 +125,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             }
         }
         [HttpPut]
+        [Authorize(Roles ="admin")]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -167,6 +170,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             }
         }
         [HttpGet("stavkeKorpe/{korpaId}")]
+        [Authorize(Roles ="admin,registrovani")]
         public ActionResult<List<string>> GetStavkeKorpeByKorpaId(int korpaId)
         {
             try
@@ -183,6 +187,24 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom pregleda proizvoda korpe sa proslijedjenim id-em.");
             }
         }
-
+        [HttpGet("iznosKolicina/{korpaId}")]
+        [Authorize(Roles = "admin,registrovani")]
+        public ActionResult<IznosKolicinaKorpeDto> GetIznosAndKolicinaKorpeByKorpaId(int korpaId)
+        {
+            try
+            {
+                var iznosKolicina = korpaRepository.GetIznosAndKolicinaByKorpaId(korpaId);
+                if(iznosKolicina == null)
+                {
+                    return NotFound("Nije pronadjena korpa sa datim id-em.");
+                }
+                return iznosKolicina;
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom vracanja kolicine i iznosa date korpe.");
+            }
+            
+        }
     }
 }

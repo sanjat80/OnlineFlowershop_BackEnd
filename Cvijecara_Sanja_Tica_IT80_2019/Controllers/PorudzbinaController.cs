@@ -53,7 +53,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             return Ok(mapper.Map<PorudzbinaDto>(porudzbina));
         }
 
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,registrovani")]
         [HttpPost]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -63,10 +63,18 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             try
             {
                 Porudzbina por = mapper.Map<Porudzbina>(porudzbina);
+                if(por.Racun != 0)
+                {
+                    return BadRequest("Iznos porudzbine se automatski unosi i azurira!");
+                }
+                if(por.Popust != 0)
+                {
+                    return BadRequest("Popust na porudzbinu se obracunava automatski, na osnovu iznosa porudzbine.");
+                }
                 PorudzbinaConfirmation confirmation = porudzbinaRepository.CreatePorudzbina(por);
                 porudzbinaRepository.SaveChanges();
                 //string? location = linkGenerator.GetPathByAction("GetTipKorisnikaById", "TipKorisnika", new { tipId = confirmation.TipId });
-                return Ok(confirmation);
+                return Ok(mapper.Map<PorudzbinaDto>(por));
             }
             catch
             {
@@ -75,7 +83,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles ="admin")]
+        [Authorize(Roles ="admin,registrovani")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -125,6 +133,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
 
         [HttpGet("racun/{porudzbinaId}")]
+        [Authorize(Roles ="admin,registrovani")]
         public ActionResult<decimal> GetRacunByPorudzbinaId(int porudzbinaId)
         {
             try
@@ -142,6 +151,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             }
         }
         [HttpGet("popust/{porudzbinaId}")]
+        [Authorize(Roles ="admin, registrovani")]
         public ActionResult<decimal> GetPopustNaPorudzbinuByPorudzbinaId(int porudzbinaId)
         {
             try

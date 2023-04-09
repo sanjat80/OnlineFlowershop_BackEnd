@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
+using Cvijecara_Sanja_Tica_IT80_2019.Models.KorpaModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorpaData
 {
@@ -67,6 +69,17 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorpaData
 
                 return korisnici.ToList();
             }
+        }
+
+        public IznosKolicinaKorpeDto GetIznosAndKolicinaByKorpaId(int korpaId)
+        {
+            var korpa = context.Korpas.FirstOrDefault(k => k.KorpaId == korpaId);
+            var iznosKolicinaDto = new IznosKolicinaKorpeDto
+            {
+                UkupanIznos = korpa.UkupanIznos,
+                Kolicina = korpa.Kolicina
+            };
+            return iznosKolicinaDto;
         }
     }
 }

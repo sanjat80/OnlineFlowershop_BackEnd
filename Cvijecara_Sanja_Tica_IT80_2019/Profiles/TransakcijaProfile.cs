@@ -13,6 +13,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Profiles
             CreateMap<TransakcijaUpdateDto, Transakcija>();
             CreateMap<TransakcijaCreationDto, Transakcija>();
             CreateMap<Transakcija,Transakcija>();
+            CreateMap<TransakcijaDto, Transakcija>();
             CreateMap<TransakcijaConfirmation, Transakcija>();
             CreateMap<Transakcija, TransakcijaConfirmation>();
             CreateMap<Transakcija, TransakcijaConfirmationDto>();

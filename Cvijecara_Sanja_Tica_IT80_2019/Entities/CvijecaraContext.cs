@@ -244,7 +244,6 @@ public partial class CvijecaraContext : DbContext
             entity.HasKey(e => new { e.ProizvodId, e.KorpaId });
 
             entity.ToTable("Stavka_Korpe", "GiftShop", tb => tb.HasTrigger("IznosPorudzbine"));
-
             entity.Property(e => e.ProizvodId).HasColumnName("proizvod_id");
             entity.Property(e => e.KorpaId).HasColumnName("korpa_id");
             entity.Property(e => e.Kolicina).HasColumnName("kolicina");
