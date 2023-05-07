@@ -89,8 +89,14 @@ namespace Cvijecara_Sanja_Tica_IT80_2019
                     ValidateIssuerSigningKey = true
                 };
             });
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddSingleton<IAuthRepository>(new AuthRepository(secret));
+            /*services.AddSingleton<IAuthRepository>(provider =>
+            {
+                var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+                return new AuthRepository(secret, httpContextAccessor);
+            });*/
             services.AddScoped<ITipKorisnikaRepository, TipKorisnikaRepository>();
             services.AddScoped<IPakovanjeRepository, PakovanjeRepository>();
             services.AddScoped<IKategorijaRepository, KategorijaRepository>();
@@ -141,6 +147,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019
                 });
             });
             services.AddDbContext<CvijecaraContext>();
+            services.AddCors();
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -150,7 +157,10 @@ namespace Cvijecara_Sanja_Tica_IT80_2019
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cvijecara v1"));
             }
-
+            app.UseCors(opt =>
+            {
+                opt.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+            });
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();

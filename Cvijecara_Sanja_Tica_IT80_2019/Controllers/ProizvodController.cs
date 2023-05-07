@@ -51,6 +51,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             {
                 return NotFound("Proizvod sa proslijedjenim id-em nije pronadjen.");
             }
+            proizvod.ProizvodId = id;
             return Ok(mapper.Map<ProizvodDto>(proizvod));
         }
 

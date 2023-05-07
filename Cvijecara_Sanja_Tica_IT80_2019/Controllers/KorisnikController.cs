@@ -214,6 +214,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Proslijedjeni tip korisnika ne postoji u bazi!");
             }
+
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom azuriranja korisnika.");

@@ -15,5 +15,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorpaData
         List<string> GetStavkeKorpeByKorpaId(int korpaId);
         public List<int> GetAllKorisnikId();
         public IznosKolicinaKorpeDto GetIznosAndKolicinaByKorpaId(int korpaId);
+        //public Korpa GetKorpaWithCookies();
+        public Korpa GetKorpaFromToken();
+        public KorpaConfirmation CreateKorpaForNewUser();
     }
 }

@@ -1,7 +1,11 @@
-﻿namespace Cvijecara_Sanja_Tica_IT80_2019.Models.ProizvodModel
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Cvijecara_Sanja_Tica_IT80_2019.Models.ProizvodModel
 {
     public class ProizvodDto
     {
+        [Key]
+        public int ProizvodId { get; set; }
         public string Naziv { get; set; } = null!;
 
         public decimal? Cijena { get; set; }

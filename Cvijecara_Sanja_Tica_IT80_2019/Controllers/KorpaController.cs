@@ -53,6 +53,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             {
                 return NotFound("Korpa sa proslijedjenim id-em nije pronadjena.");
             }
+            korpa.KorpaId = id;
             return Ok(mapper.Map<KorpaDto>(korpa));
         }
 
@@ -205,6 +206,29 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom vracanja kolicine i iznosa date korpe.");
             }
             
+        }
+        [Authorize(Roles="admin,user")]
+        [HttpGet("korpaToken")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult<KorpaDto> GetKorpaFromToken()
+        {
+            Korpa korpa = korpaRepository.GetKorpaFromToken();
+            if(korpa == null)
+            {
+                return NotFound("Nije pronadjena trazena korpa.");
+            }
+            return Ok(mapper.Map<KorpaDto>(korpa));
+        }
+        [HttpPost("korpaZaTrenutnogKorisnika")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<KorpaConfirmationDto> CreateKorpaForCurrentUser()
+        {
+            var korpa = korpaRepository.CreateKorpaForNewUser();
+            korpaRepository.SaveChanges();
+            return Ok(mapper.Map<KorpaDto>(korpa));
         }
     }
 }

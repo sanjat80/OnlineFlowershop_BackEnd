@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.KorpaModel;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorpaData
 {
@@ -10,12 +12,16 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorpaData
     {
         private readonly CvijecaraContext context;
         private readonly IMapper mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
         public static List<Korpa> Korpe { get; set; } = new List<Korpa>();
-        public KorpaRepository(CvijecaraContext context, IMapper mapper)
+        public KorpaRepository(CvijecaraContext context, IMapper mapper, IHttpContextAccessor _httpContextAccessor)
         {
             this.context = context;
             this.mapper = mapper;
+            this._httpContextAccessor = _httpContextAccessor;
         }
+
         public KorpaConfirmation CreateKorpa(Korpa korpa)
         {
             var korpaEntitet = context.Add(korpa);
@@ -80,6 +86,98 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorpaData
                 Kolicina = korpa.Kolicina
             };
             return iznosKolicinaDto;
+        }
+
+        /*public Korpa GetKorpaWithCookies()
+        {
+            var korisnikIdValue = _httpContextAccessor.HttpContext.Request.Cookies["KorisnikId"];
+            int korisnikId = 0;
+            if (int.TryParse(korisnikIdValue, out korisnikId))
+            {
+                using (var cntxt = new CvijecaraContext())
+                {
+                     Korpa basket = cntxt.Korpas.FirstOrDefault(x => x.KorisnikId == korisnikId);
+                     return basket;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }*/
+
+        /*public Korpa GetKorpaFromToken()
+        {
+            var identity = _httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
+            var korisnikIdClaim = identity.FindFirst("KorisnikId");
+
+            if (korisnikIdClaim != null && int.TryParse(korisnikIdClaim.Value, out int korisnikId))
+            {
+                using (var context = new CvijecaraContext())
+                {
+                    var korpa = context.Korpas.FirstOrDefault(x => x.KorisnikId.ToString() == korisnikIdClaim.Value);
+                    return korpa;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }*/
+        /*public Korpa GetKorpaFromToken()
+        {
+            var httpContext = _httpContextAccessor.HttpContext;
+            var authorizationHeader = httpContext.Request.Headers["Authorization"].FirstOrDefault();
+            if (authorizationHeader != null && authorizationHeader.StartsWith("Bearer "))
+            {
+                var tokenString = authorizationHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var token = handler.ReadJwtToken(tokenString);
+                var korisnikIdClaim = token.Claims.FirstOrDefault(x => x.Type == "KorisnikId");
+                if (korisnikIdClaim != null && int.TryParse(korisnikIdClaim.Value, out int korisnikId))
+                {
+                    using (var context = new CvijecaraContext())
+                    {
+                        var korpa = context.Korpas.FirstOrDefault(x => x.KorisnikId == korisnikId);
+                        return korpa;
+                    }
+                }
+            }
+            return null;
+        }*/
+        public Korpa GetKorpaFromToken()
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.ReadJwtToken(_httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", ""));
+            string username = token.Claims.FirstOrDefault(x => x.Type == "unique_name")?.Value;
+            Korpa korpa = new Korpa();
+            var kupac = context.Korisniks.Where(k => k.KorisnickoIme == username).FirstOrDefault();
+            var krp = context.Korpas.FirstOrDefault(x => x.KorisnikId == kupac.KorisnikId);
+            return krp;
+        }
+
+        public KorpaConfirmation CreateKorpaForNewUser()
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.ReadJwtToken(_httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", ""));
+            string username = token.Claims.FirstOrDefault(x => x.Type == "unique_name")?.Value;
+            var kupac = context.Korisniks.Where(k => k.KorisnickoIme == username).FirstOrDefault();
+            var korpa = new Korpa
+            {
+                KorpaId = GenerateNewId(),
+                Kolicina = 0,
+                UkupanIznos = 0,
+                Valuta = "RSD"
+            };
+            context.Korpas.Add(korpa);
+            context.SaveChanges();
+            return mapper.Map<KorpaConfirmation>(korpa);
+        }
+
+        private int GenerateNewId()
+        {
+            var lastRecordId = context.Korpas.OrderByDescending(x => x.KorpaId).Select(x => x.KorpaId).FirstOrDefault();
+            return lastRecordId + 1;
         }
     }
 }
