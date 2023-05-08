@@ -5,6 +5,8 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
+using Cvijecara_Sanja_Tica_IT80_2019.Models.StavkaKorpeModel;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorpaData
 {
@@ -162,22 +164,75 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorpaData
             var token = tokenHandler.ReadJwtToken(_httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", ""));
             string username = token.Claims.FirstOrDefault(x => x.Type == "unique_name")?.Value;
             var kupac = context.Korisniks.Where(k => k.KorisnickoIme == username).FirstOrDefault();
+
+            var existingKorpa = context.Korpas.FirstOrDefault(k => k.KorisnikId == kupac.KorisnikId);
+            if (existingKorpa != null)
+            {
+                return mapper.Map<KorpaConfirmation>(existingKorpa);
+            }
+
             var korpa = new Korpa
             {
-                KorpaId = GenerateNewId(),
+                //KorpaId = GenerateNewId(),
                 Kolicina = 0,
                 UkupanIznos = 0,
-                Valuta = "RSD"
+                Valuta = "RSD",
+                KorisnikId = kupac.KorisnikId
             };
             context.Korpas.Add(korpa);
             context.SaveChanges();
             return mapper.Map<KorpaConfirmation>(korpa);
         }
 
-        private int GenerateNewId()
+        /*private int GenerateNewId()
         {
             var lastRecordId = context.Korpas.OrderByDescending(x => x.KorpaId).Select(x => x.KorpaId).FirstOrDefault();
             return lastRecordId + 1;
+        }*/
+
+        public KorpaDto CreateKorpaForNonLoggedUser()
+        {
+            var korpa = new Korpa
+            {
+                //KorpaId = GenerateNewId(),
+                Kolicina = 0,
+                UkupanIznos = 0,
+                Valuta = "RSD",
+                KorisnikId = 15
+            };
+            context.Korpas.Add(korpa);
+            context.SaveChanges();
+            return mapper.Map<KorpaDto>(korpa);
+        }
+        private int GenerateNewKorisnikId()
+        {
+            Random random = new Random();
+            int minValue = 1;
+            int maxValue = 100;
+            int randomValue = random.Next(minValue, maxValue);
+            return randomValue;
+        }
+        public List<StavkeKorpeByKorpaId> GetStavkeKorpeByKorpa(int korpaId)
+        {
+            using (var context = new CvijecaraContext())
+            {
+                var proizvodi = from p in context.Proizvods
+                                join sk in context.StavkaKorpes on p.ProizvodId equals sk.ProizvodId
+                                where sk.KorpaId == korpaId
+                                select new { p.Naziv, sk.Kolicina };
+
+                var stavkeKorpe = proizvodi.Select(p => new StavkeKorpeByKorpaId
+                {
+                    Naziv = p.Naziv,
+                    Kolicina = p.Kolicina
+                }).ToList();
+                return stavkeKorpe;
+            }
+        }
+        public KorpaDto GetKorpaFromCurrUser() 
+        {
+            var korpa = CreateKorpaForNonLoggedUser();
+            return korpa;
         }
     }
 }

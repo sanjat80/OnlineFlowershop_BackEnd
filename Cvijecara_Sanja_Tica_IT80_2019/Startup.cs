@@ -20,6 +20,7 @@ using Cvijecara_Sanja_Tica_IT80_2019.Entities;
 using Microsoft.OpenApi.Models;
 using Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData;
 using Cvijecara_Sanja_Tica_IT80_2019.Data.ValidationData;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019
 {
@@ -89,7 +90,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019
                     ValidateIssuerSigningKey = true
                 };
             });
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddSingleton<IAuthRepository>(new AuthRepository(secret));
             /*services.AddSingleton<IAuthRepository>(provider =>
@@ -147,7 +148,10 @@ namespace Cvijecara_Sanja_Tica_IT80_2019
                 });
             });
             services.AddDbContext<CvijecaraContext>();
-            services.AddCors();
+            services.AddCors(c =>
+            {
+                c.AddPolicy("AllowAllOrigins", options => options.AllowAnyOrigin());
+            });
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

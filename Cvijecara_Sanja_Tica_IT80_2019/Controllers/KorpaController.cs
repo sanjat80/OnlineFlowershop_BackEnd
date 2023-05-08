@@ -5,7 +5,9 @@ using Cvijecara_Sanja_Tica_IT80_2019.Data.ValidationData;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.KorisnikModel;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.KorpaModel;
+using Cvijecara_Sanja_Tica_IT80_2019.Models.StavkaKorpeModel;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
@@ -216,7 +218,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             Korpa korpa = korpaRepository.GetKorpaFromToken();
             if(korpa == null)
             {
-                return NotFound("Nije pronadjena trazena korpa.");
+                var novaKorpa=korpaRepository.CreateKorpaForNewUser();
+                return Ok(mapper.Map<KorpaDto>(novaKorpa));
             }
             return Ok(mapper.Map<KorpaDto>(korpa));
         }
@@ -229,6 +232,36 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             var korpa = korpaRepository.CreateKorpaForNewUser();
             korpaRepository.SaveChanges();
             return Ok(mapper.Map<KorpaDto>(korpa));
+        }
+        [HttpPost("korpaZaNeulogovanog")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<KorpaConfirmationDto> CreateKorpaForNoLoggedUser()
+        {
+            var korpa = korpaRepository.CreateKorpaForNonLoggedUser();
+            korpaRepository.SaveChanges();
+            return Ok(mapper.Map<KorpaDto>(korpa));
+        }
+        [HttpGet("stavke/{korpaId}")]
+        public ActionResult<List<StavkeKorpeByKorpaId>> GetStavkeByKorpa(int korpaId)
+        {
+            var stavke = korpaRepository.GetStavkeKorpeByKorpa(korpaId);
+            if(stavke == null)
+            {
+                return NoContent();
+            }
+            return stavke;
+        }
+        [HttpGet("korpaTrenutni")]
+        public ActionResult<KorpaDto> GetKorpaFromCurrUser()
+        {
+            var basket = korpaRepository.GetKorpaFromCurrUser();
+            if(basket is null)
+            {
+                return NotFound("Nije pronadjena korpa.");
+            }
+            return basket;
         }
     }
 }

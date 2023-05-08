@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
+using Cvijecara_Sanja_Tica_IT80_2019.Models.StavkaKorpeModel;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
 {
@@ -7,11 +9,12 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
     {
         private readonly CvijecaraContext context;
         private readonly IMapper mapper;
-
-        public StavkaKorpeRepository(CvijecaraContext context,IMapper mapper)
+        private IHttpContextAccessor httpContextAccessor;
+        public StavkaKorpeRepository(CvijecaraContext context,IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             this.context = context;
             this.mapper = mapper;
+            this.httpContextAccessor = httpContextAccessor;
         }
         public StavkaKorpeConfirmation CreateStavkaKorpe(StavkaKorpe stavkaKorpe)
         {
@@ -43,6 +46,27 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
         public void UpdateStavkaKorpe(StavkaKorpe stavkaKorpe)
         {
             //throw new NotImplementedException();
+        }
+
+        public StavkaKorpeDto AddStavkaKorpeToKorpa(int proizvodId)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.ReadJwtToken(httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", ""));
+            string username = token.Claims.FirstOrDefault(x => x.Type == "unique_name")?.Value;
+            Korpa korpa = new Korpa();
+            var kupac = context.Korisniks.Where(k => k.KorisnickoIme == username).FirstOrDefault();
+            var krp = context.Korpas.FirstOrDefault(x => x.KorisnikId == kupac.KorisnikId);
+            int korpaId = krp.KorpaId;
+            var stavka = new StavkaKorpe
+            {
+                KorpaId = korpaId,
+                ProizvodId = proizvodId,
+                Kolicina = 2,
+                PorudzbinaId = null
+            };
+            context.Add(stavka);
+            context.SaveChanges();
+            return mapper.Map<StavkaKorpeDto>(stavka);
         }
     }
 }

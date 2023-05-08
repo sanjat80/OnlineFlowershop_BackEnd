@@ -1,5 +1,6 @@
 ﻿using Cvijecara_Sanja_Tica_IT80_2019.Entities;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.KorpaModel;
+using Cvijecara_Sanja_Tica_IT80_2019.Models.StavkaKorpeModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorpaData
@@ -18,5 +19,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorpaData
         //public Korpa GetKorpaWithCookies();
         public Korpa GetKorpaFromToken();
         public KorpaConfirmation CreateKorpaForNewUser();
+        public KorpaDto CreateKorpaForNonLoggedUser();
+        public List<StavkeKorpeByKorpaId> GetStavkeKorpeByKorpa(int korpaId);
+        public KorpaDto GetKorpaFromCurrUser();
     }
 }
