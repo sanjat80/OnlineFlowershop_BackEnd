@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
+using Cvijecara_Sanja_Tica_IT80_2019.Models.KorisnikModel;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorisnikData
 {
@@ -8,13 +11,15 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorisnikData
     {
         private readonly CvijecaraContext context;
         private readonly IMapper mapper;
+        private IHttpContextAccessor httpContextAccessor;
 
         public static List<Korisnik> Korisnici { get; set; } = new List<Korisnik>();
 
-        public KorisnikRepository(CvijecaraContext context, IMapper mapper)
+        public KorisnikRepository(CvijecaraContext context, IMapper mapper,IHttpContextAccessor httpContextAccessor)
         {
             this.context = context;
             this.mapper = mapper;
+            this.httpContextAccessor = httpContextAccessor;
         }
         public KorisnikConfirmation CreateKorisnik(Korisnik korisnik)
         {
@@ -57,5 +62,14 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorisnikData
         {
             var tip = 
         }*/
+
+        public KorisnikDto GetCurrentUser()
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.ReadJwtToken(httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", ""));
+            string username = token.Claims.FirstOrDefault(x => x.Type == "unique_name")?.Value;
+            var kupac = context.Korisniks.Where(k => k.KorisnickoIme == username).FirstOrDefault();
+            return mapper.Map<KorisnikDto>(kupac);
+        }
     }
 }

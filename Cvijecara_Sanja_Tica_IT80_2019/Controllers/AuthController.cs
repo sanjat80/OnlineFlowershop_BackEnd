@@ -27,8 +27,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             this.validationRepository = validationRepository;
         }
         [AllowAnonymous]
-        [HttpPost]
-        [Route("/login")]
+        [HttpPost("login")]
+        //[Route("/login")]
         public ActionResult Authenticate([FromBody] Kredencijali korisnik)
         {
             Korisnik user = _korisnikRepository.GetKorisnikByKorisnickoIme(korisnik.KorisnickoIme);
@@ -60,9 +60,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             }
             return Ok(token);
         }
-        [HttpPost]
+        [HttpPost("register")]
         [AllowAnonymous]
-        [Route("/register")]
         public ActionResult Register([FromBody] KorisnikRegistrationDto korisnik)
         {
             try

@@ -3,13 +3,15 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Security.Claims;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
+using Cvijecara_Sanja_Tica_IT80_2019.Models.KorisnikModel;
+using Microsoft.AspNetCore.Http;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.AuthHelpers
 {
     public class AuthRepository : IAuthRepository
     {
         private readonly string _key;
-
+        
         public AuthRepository(string key)
         {
             this._key = key;

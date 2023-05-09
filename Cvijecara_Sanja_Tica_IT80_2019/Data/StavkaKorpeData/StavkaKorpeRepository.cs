@@ -65,7 +65,6 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
                 PorudzbinaId = null
             };
             context.Add(stavka);
-            context.SaveChanges();
             return mapper.Map<StavkaKorpeDto>(stavka);
         }
     }

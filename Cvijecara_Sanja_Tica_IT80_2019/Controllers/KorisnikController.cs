@@ -220,5 +220,16 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom azuriranja korisnika.");
             }
         }
+        [Authorize(Roles ="registrovani, admin")]
+        [HttpGet("/trenutniKorisnik")]
+        public ActionResult<KorisnikDto> GetCurrentUser()
+        {
+            var user = korisnikRepository.GetCurrentUser();
+            if(user == null)
+            {
+                return NoContent();
+            }
+            return user;
+        }
     }
 }

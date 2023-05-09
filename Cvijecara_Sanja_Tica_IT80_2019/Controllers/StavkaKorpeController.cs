@@ -124,5 +124,16 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom azuriranja kategorije.");
             }
         }
+        [HttpPost("stavkaKorpa")]
+        public ActionResult<StavkaKorpeDto> AddStavkaKorpeToCurrentUser([FromBody] int proizvodId)
+        {
+            var stavkaKorpe = stavkaKorpeRepository.AddStavkaKorpeToKorpa(proizvodId);
+            if (stavkaKorpe == null)
+            {
+                return NoContent();
+            }
+            stavkaKorpeRepository.SaveChanges();
+            return stavkaKorpe;
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Cvijecara_Sanja_Tica_IT80_2019.Entities;
+using Cvijecara_Sanja_Tica_IT80_2019.Models.KorisnikModel;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorisnikData
 {
@@ -11,5 +12,6 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorisnikData
         void UpdateKorisnik(Korisnik korisnik);
         void DeleteKorisnik(int id);
         bool SaveChanges();
+        public KorisnikDto GetCurrentUser();
     }
 }
