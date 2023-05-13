@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
+using Cvijecara_Sanja_Tica_IT80_2019.Models.ProizvodModel;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.StavkaKorpeModel;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Profiles
@@ -18,6 +19,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Profiles
             CreateMap<StavkaKorpe, StavkaKorpeConfirmationDto>();
             CreateMap<StavkaKorpeConfirmationDto, StavkaKorpe>();
             CreateMap<StavkaKorpeConfirmation, StavkaKorpeConfirmationDto>();
+            CreateMap<StavkaKorpe, DodajProizvod>();
+            CreateMap<DodajProizvod, StavkaKorpe>();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.StavkaKorpeModel;
+using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
@@ -48,7 +49,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
             //throw new NotImplementedException();
         }
 
-        public StavkaKorpeDto AddStavkaKorpeToKorpa(int proizvodId)
+        public void AddStavkaKorpeToKorpa(int proizvodId)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.ReadJwtToken(httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", ""));
@@ -61,11 +62,10 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
             {
                 KorpaId = korpaId,
                 ProizvodId = proizvodId,
-                Kolicina = 2,
+                Kolicina = 1,
                 PorudzbinaId = null
             };
             context.Add(stavka);
-            return mapper.Map<StavkaKorpeDto>(stavka);
         }
     }
 }

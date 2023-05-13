@@ -243,10 +243,10 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             korpaRepository.SaveChanges();
             return Ok(mapper.Map<KorpaDto>(korpa));
         }
-        [HttpGet("stavke/{korpaId}")]
-        public ActionResult<List<StavkeKorpeByKorpaId>> GetStavkeByKorpa(int korpaId)
+        [HttpGet("stavke")]
+        public ActionResult<List<StavkeKorpeByKorpaId>> GetStavkeByKorpa()
         {
-            var stavke = korpaRepository.GetStavkeKorpeByKorpa(korpaId);
+            var stavke = korpaRepository.GetStavkeKorpeByKorpa();
             if(stavke == null)
             {
                 return NoContent();
@@ -262,6 +262,16 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                 return NotFound("Nije pronadjena korpa.");
             }
             return basket;
+        }
+        [HttpGet("korpaUlogovanog")]
+        public ActionResult<int> GetKorpaFromCurrentUser()
+        {
+            var korpa = korpaRepository.GetKorpaFromCurrentUser();
+            if(korpa == null)
+            {
+                return NotFound("Korisnik nema korpu!");
+            }
+            return korpa;
         }
     }
 }

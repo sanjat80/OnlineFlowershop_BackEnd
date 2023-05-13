@@ -4,5 +4,7 @@
     {
         public string Naziv { get; set; }
         public int Kolicina { get; set; }
+
+        public double Cijena { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
+using Cvijecara_Sanja_Tica_IT80_2019.Models.ProizvodModel;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.StavkaKorpeModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -125,15 +126,19 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             }
         }
         [HttpPost("stavkaKorpa")]
-        public ActionResult<StavkaKorpeDto> AddStavkaKorpeToCurrentUser([FromBody] int proizvodId)
+        public ActionResult<StavkaKorpeDto> AddStavkaKorpeToCurrentUser([FromBody] DodajProizvod proizvodId)
         {
-            var stavkaKorpe = stavkaKorpeRepository.AddStavkaKorpeToKorpa(proizvodId);
-            if (stavkaKorpe == null)
+            try
             {
-                return NoContent();
+                StavkaKorpe stavka = mapper.Map<StavkaKorpe>(proizvodId);
+                stavkaKorpeRepository.AddStavkaKorpeToKorpa(stavka.ProizvodId);
+                stavkaKorpeRepository.SaveChanges();
+                return StatusCode(201, "Dodat proizvod");
             }
-            stavkaKorpeRepository.SaveChanges();
-            return stavkaKorpe;
+            catch(Exception e)
+            {
+                return StatusCode(500,e);
+            }
         }
     }
 }
