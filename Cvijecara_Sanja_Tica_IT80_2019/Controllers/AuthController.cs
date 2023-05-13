@@ -11,7 +11,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
 {
     [ApiController]
     [Route("api/Account")]
-    [Produces("application/json","application/xml")]
+    //[Produces("application/json")]
     public class AuthController:ControllerBase
     {
         private readonly IKorisnikRepository _korisnikRepository;
@@ -74,7 +74,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                     }
                     if(!validationRepository.ValidatePassword(korisnik.Lozinka))
                     {
-                        return BadRequest("Lozinka nije unesena u dobrom formatu: mora sadrzati bar 8 karaktera, bar jedno veliko i jedno malo slovo, bar jednu cifru i jedan specijalni karakter.");
+                        return BadRequest( "Lozinka nije unesena u dobrom formatu: mora sadrzati bar 8 karaktera, bar jedno veliko i jedno malo slovo, bar jednu cifru i jedan specijalni karakter." );
                     }
                     string? lozinka = korisnik.Lozinka;
                     string lozinka2 = BCrypt.Net.BCrypt.HashPassword(lozinka);

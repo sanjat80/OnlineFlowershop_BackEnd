@@ -221,15 +221,34 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             }
         }
         [Authorize(Roles ="registrovani, admin")]
-        [HttpGet("/trenutniKorisnik")]
+        [Produces("application/json")]
+        [HttpGet("trenutniKorisnik")]
         public ActionResult<KorisnikDto> GetCurrentUser()
         {
-            var user = korisnikRepository.GetCurrentUser();
-            if(user == null)
+            try
             {
-                return NoContent();
+                var user = korisnikRepository.GetCurrentUser();
+                if (user == null)
+                {
+                    return NoContent();
+                }
+                return user;
+            }catch(Exception e)
+            {
+                return BadRequest(e);
             }
-            return user;
         }
+        [Authorize(Roles ="admin, registrovani")]
+        [HttpGet("korpaKorisnik")]
+        public ActionResult<KorisnikKorpaDto> GetKorisnikAndKorpaFromCurrentUser()
+        {
+            var korisnik = korisnikRepository.GetKorpaForCurrentUser();
+            if(korisnik == null)
+            {
+                return NotFound();
+            }
+            return Ok(korisnik);
+        }
+
     }
 }

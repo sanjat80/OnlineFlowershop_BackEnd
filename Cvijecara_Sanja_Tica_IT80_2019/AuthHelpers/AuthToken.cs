@@ -4,5 +4,6 @@
     {
         public string? Token { get; set; }
         public string? Expires { get; set; }
+        public string? KorisnickoIme { get; set; }
     }
 }

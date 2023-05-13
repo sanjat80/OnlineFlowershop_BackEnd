@@ -68,8 +68,25 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorisnikData
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.ReadJwtToken(httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", ""));
             string username = token.Claims.FirstOrDefault(x => x.Type == "unique_name")?.Value;
-            var kupac = context.Korisniks.Where(k => k.KorisnickoIme == username).FirstOrDefault();
+            var kupac = context.Korisniks.Where(k => k.KorisnickoIme == username).FirstOrDefault(); 
             return mapper.Map<KorisnikDto>(kupac);
         }
+        public KorisnikKorpaDto GetKorpaForCurrentUser()
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.ReadJwtToken(httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", ""));
+            string username = token.Claims.FirstOrDefault(x => x.Type == "unique_name")?.Value;
+            var kupac = context.Korisniks.Where(k => k.KorisnickoIme == username).FirstOrDefault();
+            var existingKorpa = context.Korpas.FirstOrDefault(k => k.KorisnikId == kupac.KorisnikId);
+            var korisnik = new KorisnikKorpaDto
+            {
+                Token = token.ToString(),
+                KorisnickoIme = kupac.KorisnickoIme,
+                KorpaId = existingKorpa.KorpaId
+            };
+            return korisnik;
+        }
+
+
     }
 }

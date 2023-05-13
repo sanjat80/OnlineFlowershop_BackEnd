@@ -34,8 +34,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers(setup =>
-                setup.ReturnHttpNotAcceptable = true
+            services.AddControllers(
             ).AddXmlDataContractSerializerFormatters()
             .ConfigureApiBehaviorOptions(setupAction =>
             {
@@ -59,10 +58,10 @@ namespace Cvijecara_Sanja_Tica_IT80_2019
                         problemDetails.Status = StatusCodes.Status422UnprocessableEntity;
                         problemDetails.Title = "Došlo je do greške prilikom validacije.";
 
-                        return new UnprocessableEntityObjectResult(problemDetails)
+                        /*return new UnprocessableEntityObjectResult(problemDetails)
                         {
                             ContentTypes = { "application/problem+json" }
-                        };
+                        };*/
                     };
                     problemDetails.Status = StatusCodes.Status400BadRequest;
                     problemDetails.Title = "Došlo je do greške prilikom parsiranja poslatog sadržaja.";
