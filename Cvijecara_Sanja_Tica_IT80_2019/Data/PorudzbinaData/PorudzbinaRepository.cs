@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
+using Cvijecara_Sanja_Tica_IT80_2019.Models.PorudzbinaModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Data.PorudzbinaData
@@ -9,7 +10,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.PorudzbinaData
         private readonly CvijecaraContext context;
         private readonly IMapper mapper;
         public static List<Porudzbina> Porudzbine { get; set; } = new List<Porudzbina>();
-        public PorudzbinaRepository(CvijecaraContext context,IMapper mapper)
+        public PorudzbinaRepository(CvijecaraContext context, IMapper mapper)
         {
             this.context = context;
             this.mapper = mapper;
@@ -69,6 +70,31 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.PorudzbinaData
                 return naziviProizvoda.ToList();
             }
         }
+
+        public PorudzbinaDto CreatePorudzbinaForUser()
+        {
+            var porudzbina = new Porudzbina
+            {
+                RedniBroj = GenerateRandomString(5),
+                DatumKreiranja = DateTime.Now,
+                StatusPorudzbine = "U obradi",
+                Racun = 0,
+                Popust = 0
+            };
+            context.Add(porudzbina);
+            context.SaveChanges();
+            return mapper.Map<PorudzbinaDto>(porudzbina);
+        }
+
+
+        public string GenerateRandomString(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var random = new Random();
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
     }
 }
+
 

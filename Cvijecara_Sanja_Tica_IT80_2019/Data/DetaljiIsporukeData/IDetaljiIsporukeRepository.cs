@@ -1,4 +1,5 @@
 ﻿using Cvijecara_Sanja_Tica_IT80_2019.Entities;
+using Cvijecara_Sanja_Tica_IT80_2019.Models.DetaljiIsporukeModel;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Data.DetaljiIsporukeData
 {
@@ -10,6 +11,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.DetaljiIsporukeData
         void UpdateDetaljiIsporuke(DetaljiIsporuke detaljiIsporuke);
         void DeleteDetaljiIsporuke(int id);
         bool SaveChanges();
-        public List<int> GetAllPorudzbinaId();
+        List<int> GetAllPorudzbinaId();
+        DetaljiIsporukeDto CreateDetaljiForKorpa(DetaljiIsporukePorudzbinaDto detaljiIsporuke);
+
     }
 }

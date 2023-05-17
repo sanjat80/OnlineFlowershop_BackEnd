@@ -21,6 +21,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Profiles
             CreateMap<StavkaKorpeConfirmation, StavkaKorpeConfirmationDto>();
             CreateMap<StavkaKorpe, DodajProizvod>();
             CreateMap<DodajProizvod, StavkaKorpe>();
+            CreateMap<StavkeKorpeByKorpaId, StavkaKorpe>();
+            CreateMap<StavkaKorpe, StavkeKorpeByKorpaId>();
         }
     }
 }

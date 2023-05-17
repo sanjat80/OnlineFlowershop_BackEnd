@@ -10,7 +10,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
 {
     [ApiController]
     [Route("api/stavkeKorpe")]
-    [Produces("application/json","application/xml")]
+    //[Produces("application/json","application/xml")]
     public class StavkaKorpeController : ControllerBase
     { 
         private readonly IStavkaKorpeRepository stavkaKorpeRepository;
@@ -78,7 +78,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         }
 
         [HttpDelete("{proizvodId}/{korpaId}")]
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -126,12 +126,13 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             }
         }
         [HttpPost("stavkaKorpa")]
+        [Consumes("application/json")]
         public ActionResult<StavkaKorpeDto> AddStavkaKorpeToCurrentUser([FromBody] DodajProizvod proizvodId)
         {
             try
             {
                 StavkaKorpe stavka = mapper.Map<StavkaKorpe>(proizvodId);
-                stavkaKorpeRepository.AddStavkaKorpeToKorpa(stavka.ProizvodId);
+                stavkaKorpeRepository.AddStavkaKorpeToUKorpa(stavka.ProizvodId);
                 stavkaKorpeRepository.SaveChanges();
                 return StatusCode(201, "Dodat proizvod");
             }
@@ -139,6 +140,53 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             {
                 return StatusCode(500,e);
             }
+        }
+        [HttpDelete("ukloniProizvodIzKorpe/{proizvodId}")]
+        public ActionResult RemoveProductFromCurrentKorpa(int proizvodId)
+        {
+            try
+            {
+                stavkaKorpeRepository.RemoveItemFromCurrentKorpa(proizvodId);
+                return StatusCode(200, "Obrisan proizvod iz korpe");
+            }
+            catch(Exception e)
+            {
+                return StatusCode(500,e);
+            }
+        }
+        [HttpDelete("azurirajKolicinu/{proizvodId}")]
+        public ActionResult ChangeKolicina(int proizvodId)
+        {
+            try
+            {
+                var stavka= stavkaKorpeRepository.ChangeKolicina(proizvodId);
+                return Ok(stavka);
+            }
+            catch(Exception e)
+            {
+                return StatusCode(500, e);
+            }
+        }
+        [HttpPost("dodajNaPlus")]
+        [Consumes("application/json")]
+        public ActionResult<StavkeKorpeByKorpaId> AddStavkaKorpeOnPlus([FromBody] DodajProizvod proizvodId)
+        {
+            try
+            {
+                var stavka = stavkaKorpeRepository.AddStavkaKorpeToUKorpaForPlus(proizvodId);
+                return Ok(stavka);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e);
+            }
+        }
+
+        [HttpPut("porudzbinaNaStavkama")]
+        public ActionResult UpdatePorudzbinaOnStavke()
+        {
+            stavkaKorpeRepository.UpdatePorudzbinaOnStavke();
+            return Ok("Azurirana porudzbina za date stavke korpe!");
         }
     }
 }

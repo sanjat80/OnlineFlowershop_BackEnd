@@ -54,6 +54,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             {
                 return NotFound("Detalji isporuke sa proslijedjenim id-em nisu pronadjeni.");
             }
+            detalji.IsporukaId = id;
             return Ok(mapper.Map<DetaljiIsporukeDto>(detalji));
         }
 
@@ -162,6 +163,14 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom azuriranja kategorije.");
             }
+        }
+
+        [HttpPost("detaljiPorudzbine")]
+        public ActionResult<DetaljiIsporukeDto> CreateDetaljiIsporukeForPorudzbina([FromBody] DetaljiIsporukePorudzbinaDto detaljiIsporuke)
+        {
+                var detalji = detaljiIsporukeRepository.CreateDetaljiForKorpa(detaljiIsporuke);
+                return Ok(detalji);
+
         }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using Cvijecara_Sanja_Tica_IT80_2019.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Models.PorudzbinaModel
 {
     public class PorudzbinaDto
     {
-
+        [Key]
+        public int PorudzbinaId { get; set; }
         public string RedniBroj { get; set; } = null!;
 
         public DateTime DatumKreiranja { get; set; }

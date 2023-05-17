@@ -1,4 +1,5 @@
 ﻿using Cvijecara_Sanja_Tica_IT80_2019.Entities;
+using Cvijecara_Sanja_Tica_IT80_2019.Models.PorudzbinaModel;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Data.PorudzbinaData
 {
@@ -10,8 +11,9 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.PorudzbinaData
         void UpdatePorudzbina(Porudzbina porudzbina);
         void DeletePorudzbina(int id);
         bool SaveChanges();
-        public decimal GetRacunPorudzbineByPorudzbinaId(int porudzbinaId);
-        public decimal GetPopustNaPorudzbinuByPorudzbinaId(int porudzbinaId);
-        public List<int> GetAllPorudzbinaId();
+        decimal GetRacunPorudzbineByPorudzbinaId(int porudzbinaId);
+        decimal GetPopustNaPorudzbinuByPorudzbinaId(int porudzbinaId);
+        List<int> GetAllPorudzbinaId();
+        PorudzbinaDto CreatePorudzbinaForUser();
     }
 }

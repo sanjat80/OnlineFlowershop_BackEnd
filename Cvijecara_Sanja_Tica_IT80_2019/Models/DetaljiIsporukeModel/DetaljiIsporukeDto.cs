@@ -1,7 +1,11 @@
-﻿namespace Cvijecara_Sanja_Tica_IT80_2019.Models.DetaljiIsporukeModel
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Cvijecara_Sanja_Tica_IT80_2019.Models.DetaljiIsporukeModel
 {
     public class DetaljiIsporukeDto
     {
+        [Key]
+        public int IsporukaId { get; set; }
         public bool Isporuceno { get; set; }
 
         public DateTime? DatumIsporuke { get; set; }

@@ -50,6 +50,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             {
                 return NotFound("Porudzbina sa proslijedjenim id-em nije pronadjena.");
             }
+            porudzbina.PorudzbinaId = id;
             return Ok(mapper.Map<PorudzbinaDto>(porudzbina));
         }
 
@@ -167,6 +168,15 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Jos nije evidentiran popust za datu porudzbinu.");
             }
+        }
+        [HttpPost("porudzbinaZaKorpu")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<PorudzbinaDto> CreatePorudzbinaForUser()
+        {
+            var porudzbina = porudzbinaRepository.CreatePorudzbinaForUser();
+            return Ok(porudzbina);
         }
 
     }

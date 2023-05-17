@@ -76,6 +76,14 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                     {
                         return BadRequest( "Lozinka nije unesena u dobrom formatu: mora sadrzati bar 8 karaktera, bar jedno veliko i jedno malo slovo, bar jednu cifru i jedan specijalni karakter." );
                     }
+                    if (!validationRepository.IsEmailUnique(korisnik.Email))
+                    {
+                        return BadRequest("Korisnik sa datim email-om vec postoji!");
+                    }
+                    if (!validationRepository.IsUsernameUnique(korisnik.KorisnickoIme))
+                    {
+                        return BadRequest("Korisnik sa datim korisnickim imenom vec postoji!");
+                    }
                     string? lozinka = korisnik.Lozinka;
                     string lozinka2 = BCrypt.Net.BCrypt.HashPassword(lozinka);
                     korisnik.Lozinka = lozinka2;

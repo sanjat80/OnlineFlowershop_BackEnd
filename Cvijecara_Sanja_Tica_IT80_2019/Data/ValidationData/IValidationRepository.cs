@@ -6,5 +6,7 @@
         public bool IsValidEmail(string email);
         public bool ValidatePassword(string password);
         public bool ValidateDatumIsporuke(DateTime date);
+        public bool IsEmailUnique(string email);
+        public bool IsUsernameUnique(string username);
     }
 }

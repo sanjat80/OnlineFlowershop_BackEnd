@@ -222,13 +222,14 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorpaData
                                 join sk in context.StavkaKorpes on p.ProizvodId equals sk.ProizvodId
                                 where sk.KorpaId == korpaId
                                 let price = sk.Kolicina * p.Cijena
-                                select new { p.Naziv, sk.Kolicina, Cijena = price };
+                                select new { p.Naziv, sk.Kolicina, Cijena = price,p.ProizvodId };
 
                 var stavkeKorpe = proizvodi.Select(p => new StavkeKorpeByKorpaId
                 {
                     Naziv = p.Naziv,
                     Kolicina = p.Kolicina,
-                    Cijena = (double)p.Cijena
+                    Cijena = (double)p.Cijena,
+                    ProizvodId = p.ProizvodId
                 }).ToList();
                 return stavkeKorpe;
             }

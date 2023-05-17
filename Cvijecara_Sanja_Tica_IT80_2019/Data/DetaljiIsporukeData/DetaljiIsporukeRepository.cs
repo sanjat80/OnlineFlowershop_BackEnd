@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
+using Cvijecara_Sanja_Tica_IT80_2019.Models.DetaljiIsporukeModel;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Data.DetaljiIsporukeData
 {
@@ -55,5 +56,27 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.DetaljiIsporukeData
                 return naziviProizvoda.ToList();
             }
         }
+
+        public DetaljiIsporukeDto CreateDetaljiForKorpa(DetaljiIsporukePorudzbinaDto detaljiIsporuke)
+        {
+            var lastPorudzbina = context.Porudzbinas.OrderByDescending(p => p.PorudzbinaId).FirstOrDefault();
+            int porudzbinaId = lastPorudzbina.PorudzbinaId;
+            var DetaljiIsporuke = new DetaljiIsporuke
+            {
+                Isporuceno = false,
+                DatumIsporuke = DateTime.Now,
+                Tip = "klasicna",
+                Adresa = detaljiIsporuke.Adresa,
+                BrojTelefona = detaljiIsporuke.BrojTelefona,
+                Grad = detaljiIsporuke.Grad,
+                Region = detaljiIsporuke.Region,
+                Drzava = detaljiIsporuke.Drzava,
+                PorudzbinaId = porudzbinaId
+            };
+            context.Add(DetaljiIsporuke);
+            context.SaveChanges();
+            return mapper.Map<DetaljiIsporukeDto>(DetaljiIsporuke);
+        }
+
     }
 }

@@ -6,5 +6,6 @@
         public int Kolicina { get; set; }
 
         public double Cijena { get; set; }
+        public int ProizvodId { get; set; }
     }
 }

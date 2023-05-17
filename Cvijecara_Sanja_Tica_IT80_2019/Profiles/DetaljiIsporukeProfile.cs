@@ -19,6 +19,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Profiles
             CreateMap<DetaljiIsporuke, DetaljiIsporukeConfirmationDto>();
             CreateMap<DetaljiIsporukeConfirmationDto, DetaljiIsporuke>();
             CreateMap<DetaljiIsporukeConfirmation, DetaljiIsporukeConfirmationDto>();
+            CreateMap<DetaljiIsporukeDto, DetaljiIsporuke>();
         }
     }
 }

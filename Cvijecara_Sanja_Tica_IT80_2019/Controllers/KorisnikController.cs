@@ -75,6 +75,14 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                     {
                         return BadRequest("Lozinka nije unesena u dobrom formatu: mora sadrzati bar 8 karaktera, bar jedno veliko i jedno malo slovo, bar jednu cifru i jedan specijalni karakter.");
                     }
+                    if (!validationRepository.IsEmailUnique(korisnik.Email))
+                    {
+                        return BadRequest("Korisnik sa datim email-om vec postoji!");
+                    }
+                    if (!validationRepository.IsUsernameUnique(korisnik.KorisnickoIme))
+                    {
+                        return BadRequest("Korisnik sa datim korisnickim imenom vec postoji!");
+                    }
                     string? lozinka = korisnik.Lozinka;
                     string lozinka2 = BCrypt.Net.BCrypt.HashPassword(lozinka);
                     korisnik.Lozinka = lozinka2;
@@ -145,6 +153,14 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                     {
                         return BadRequest("Lozinka nije unesena u dobrom formatu: mora sadrzati bar 8 karaktera, bar jedno veliko i jedno malo slovo, bar jednu cifru i jedan specijalni karakter.");
                     }
+                    if (!validationRepository.IsEmailUnique(korisnik.Email))
+                    {
+                        return BadRequest("Korisnik sa datim email-om vec postoji!");
+                    }
+                    if (!validationRepository.IsUsernameUnique(korisnik.KorisnickoIme))
+                    {
+                        return BadRequest("Korisnik sa datim korisnickim imenom vec postoji!");
+                    }
                     var stariKorisnik = korisnikRepository.GetKorisnikById(korisnik.KorisnikId);
                     if (stariKorisnik == null)
                     {
@@ -169,9 +185,9 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom azuriranja korisnika.");
             }
         }
-        [HttpPut]
+        [HttpPut("registrovani")]
         [Authorize(Roles ="registrovani")]
-        [Route("/registrovani")]
+        //[Route("/registrovani")]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -189,6 +205,14 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                     if (!validationRepository.ValidatePassword(korisnik.Lozinka))
                     {
                         return BadRequest("Lozinka nije unesena u dobrom formatu: mora sadrzati bar 8 karaktera, bar jedno veliko i jedno malo slovo, bar jednu cifru i jedan specijalni karakter.");
+                    }
+                    if(!validationRepository.IsEmailUnique(korisnik.Email))
+                    {
+                        return BadRequest("Korisnik sa datim email-om vec postoji!");
+                    }
+                    if(!validationRepository.IsUsernameUnique(korisnik.KorisnickoIme))
+                    {
+                        return BadRequest("Korisnik sa datim korisnickim imenom vec postoji!");
                     }
                     var stariKorisnik = korisnikRepository.GetKorisnikById(korisnik.KorisnikId);
                     if (stariKorisnik == null)

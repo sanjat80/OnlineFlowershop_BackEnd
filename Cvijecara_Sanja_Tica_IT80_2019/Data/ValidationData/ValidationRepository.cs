@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using Cvijecara_Sanja_Tica_IT80_2019.Entities;
+using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Data.ValidationData
 {
@@ -70,6 +72,34 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.ValidationData
                 return false;
             }
 
+            return true;
+        }
+
+        public bool IsEmailUnique(string email)
+        {
+            using (var db = new CvijecaraContext())
+            {
+                var user = db.Korisniks.FirstOrDefault(u => u.Email == email);
+                
+                if(user != null)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public bool IsUsernameUnique(string username)
+        {
+            using (var db = new CvijecaraContext())
+            {
+                var user = db.Korisniks.FirstOrDefault(u => u.KorisnickoIme == username);
+
+                if (user != null)
+                {
+                    return false;
+                }
+            }
             return true;
         }
 
