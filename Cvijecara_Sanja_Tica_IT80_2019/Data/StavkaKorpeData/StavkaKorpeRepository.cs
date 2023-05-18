@@ -86,6 +86,10 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
             if (existingStavka != null)
             {
                 existingStavka.Kolicina++;
+
+                var proizvod = context.Proizvods.FirstOrDefault(p => p.ProizvodId == proizvodId);
+                proizvod.Zalihe--;
+
             }
             else
             {
@@ -96,6 +100,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
                     Kolicina = 1,
                     PorudzbinaId = null
                 };
+                var proizvod = context.Proizvods.FirstOrDefault(p => p.ProizvodId == proizvodId);
+                proizvod.Zalihe--;
                 context.Add(stavka);
             }
 
@@ -132,6 +138,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
 
             if (stavkaKorpe != null)
             {
+                var proizvod = context.Proizvods.FirstOrDefault(p => p.ProizvodId == proizvodId);
+                proizvod.Zalihe += stavkaKorpe.Kolicina;
                 // Remove the item from the basket
                 korpa.StavkaKorpes.Remove(stavkaKorpe);
                 context.SaveChanges();
@@ -180,6 +188,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
             if(stavka.Kolicina>1)
             {
                 stavka.Kolicina--;
+                proizvod.Zalihe++;
                 var skorpe = new StavkeKorpeByKorpaId
                 {
                     Naziv = proizvod.Naziv,
@@ -193,6 +202,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
             else
             {
                 RemoveItemFromCurrentKorpa(proizvodId);
+                proizvod.Zalihe++;
                 context.SaveChanges();
                 return mapper.Map<StavkeKorpeByKorpaId>(stavka);
             }
@@ -238,6 +248,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
             var stavka = context.StavkaKorpes.FirstOrDefault(s => s.KorpaId == korpaId && s.ProizvodId == prId);
             var proizvod = context.Proizvods.FirstOrDefault(p => p.ProizvodId == prId);
             stavka.Kolicina++;
+            proizvod.Zalihe--;
             var skorpe = new StavkeKorpeByKorpaId
             {
                 Naziv = proizvod.Naziv,
