@@ -15,5 +15,6 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.PorudzbinaData
         decimal GetPopustNaPorudzbinuByPorudzbinaId(int porudzbinaId);
         List<int> GetAllPorudzbinaId();
         PorudzbinaDto CreatePorudzbinaForUser();
+        List<PorudzbinaDto> GetAllPorudzbinaFromCurrentUser();
     }
 }

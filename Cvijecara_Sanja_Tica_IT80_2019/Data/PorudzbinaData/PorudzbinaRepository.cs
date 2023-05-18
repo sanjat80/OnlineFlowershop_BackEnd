@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.PorudzbinaModel;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Data.PorudzbinaData
 {
@@ -9,11 +11,13 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.PorudzbinaData
     {
         private readonly CvijecaraContext context;
         private readonly IMapper mapper;
+        IHttpContextAccessor httpContextAccessor;
         public static List<Porudzbina> Porudzbine { get; set; } = new List<Porudzbina>();
-        public PorudzbinaRepository(CvijecaraContext context, IMapper mapper)
+        public PorudzbinaRepository(CvijecaraContext context, IMapper mapper,IHttpContextAccessor httpContextAccessor)
         {
             this.context = context;
             this.mapper = mapper;
+            this.httpContextAccessor = httpContextAccessor;
         }
         public PorudzbinaConfirmation CreatePorudzbina(Porudzbina porudzbina)
         {
@@ -93,6 +97,29 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.PorudzbinaData
             var random = new Random();
             return new string(Enumerable.Repeat(chars, length)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        public List<PorudzbinaDto> GetAllPorudzbinaFromCurrentUser()
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.ReadJwtToken(httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", ""));
+            string username = token.Claims.FirstOrDefault(x => x.Type == "unique_name")?.Value;
+            var kupac = context.Korisniks.Where(k => k.KorisnickoIme == username).FirstOrDefault();
+            var existingKorpa = context.Korpas.FirstOrDefault(k => k.KorisnikId == kupac.KorisnikId);
+            int korpaId = existingKorpa.KorpaId;
+            int korisnikId = kupac.KorisnikId;
+
+            var orders = context.StavkaKorpes
+            .Where(sk => sk.KorpaId == korpaId)
+            .Select(sk => sk.PorudzbinaId)
+            .Distinct()
+            .ToList();
+
+            var orderObjects = context.Porudzbinas
+            .Where(o => orders.Contains(o.PorudzbinaId)).ToList();
+
+            return mapper.Map<List<PorudzbinaDto>>(orderObjects);
+
         }
     }
 }

@@ -179,5 +179,18 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             return Ok(porudzbina);
         }
 
+        [HttpGet("porudzbineKorpe")]
+        public ActionResult<PorudzbinaDto> GetAllPorudzbinaFromCurrentUser()
+        {
+            var porudzbine = porudzbinaRepository.GetAllPorudzbinaFromCurrentUser();
+            if(porudzbine!= null || porudzbine.Count() ==0)
+            {
+                return Ok(porudzbine);
+            }
+            return NotFound();
+
+
+        }
+
     }
 }

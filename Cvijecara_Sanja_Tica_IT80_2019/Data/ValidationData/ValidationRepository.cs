@@ -85,8 +85,11 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.ValidationData
                 {
                     return false;
                 }
+                else
+                {
+                    return true;
+                }
             }
-            return true;
         }
 
         public bool IsUsernameUnique(string username)
@@ -99,8 +102,11 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.ValidationData
                 {
                     return false;
                 }
+                else
+                {
+                    return true;
+                }
             }
-            return true;
         }
 
     }
