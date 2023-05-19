@@ -1,4 +1,5 @@
 ﻿using Cvijecara_Sanja_Tica_IT80_2019.Entities;
+using Cvijecara_Sanja_Tica_IT80_2019.Models.ProizvodModel;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Data.ProizvodData
 {
@@ -10,5 +11,6 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.ProizvodData
         void UpdateProizvod(Proizvod proizvod);
         void DeleteProizvod(int id);
         bool SaveChanges();
+        ProizvodFrontDto GetProizvodByIdOnFront(int id);
     }
 }

@@ -82,31 +82,33 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
 
             // Check if the product already exists in the basket
             var existingStavka = korpa.StavkaKorpes.FirstOrDefault(s => s.ProizvodId == proizvodId);
-
-            if (existingStavka != null)
+            var proizvod = context.Proizvods.FirstOrDefault(p => p.ProizvodId == proizvodId);
+            if (proizvod.Zalihe >0)
             {
-                existingStavka.Kolicina++;
-
-                var proizvod = context.Proizvods.FirstOrDefault(p => p.ProizvodId == proizvodId);
-                proizvod.Zalihe--;
-
-            }
-            else
-            {
-                var stavka = new StavkaKorpe
+                if (existingStavka != null)
                 {
-                    KorpaId = korpa.KorpaId,
-                    ProizvodId = proizvodId,
-                    Kolicina = 1,
-                    PorudzbinaId = null
-                };
-                var proizvod = context.Proizvods.FirstOrDefault(p => p.ProizvodId == proizvodId);
-                proizvod.Zalihe--;
-                context.Add(stavka);
-            }
+                    existingStavka.Kolicina++;
 
-            context.SaveChanges();
+                    proizvod.Zalihe--;
+
+                }
+                else
+                {
+                    var stavka = new StavkaKorpe
+                    {
+                        KorpaId = korpa.KorpaId,
+                        ProizvodId = proizvodId,
+                        Kolicina = 1,
+                        PorudzbinaId = null
+                    };
+                    proizvod.Zalihe--;
+                    context.Add(stavka);
+                }
+
+                context.SaveChanges();
+            }
         }
+            
 
         /*public void RemoveItemFromCurrentKorpa(int proizvodId)
         {
@@ -247,17 +249,24 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
             int prId = proizvodId.ProizvodId;
             var stavka = context.StavkaKorpes.FirstOrDefault(s => s.KorpaId == korpaId && s.ProizvodId == prId);
             var proizvod = context.Proizvods.FirstOrDefault(p => p.ProizvodId == prId);
-            stavka.Kolicina++;
-            proizvod.Zalihe--;
-            var skorpe = new StavkeKorpeByKorpaId
+            if (proizvod.Zalihe > 0)
             {
-                Naziv = proizvod.Naziv,
-                Kolicina = stavka.Kolicina,
-                Cijena = (double)(proizvod.Cijena * stavka.Kolicina),
-                ProizvodId = prId
-            };
-            context.SaveChanges();
-            return skorpe;
+                stavka.Kolicina++;
+                proizvod.Zalihe--;
+                var skorpe = new StavkeKorpeByKorpaId
+                {
+                    Naziv = proizvod.Naziv,
+                    Kolicina = stavka.Kolicina,
+                    Cijena = (double)(proizvod.Cijena * stavka.Kolicina),
+                    ProizvodId = prId
+                };
+                context.SaveChanges();
+                return skorpe;
+            }
+            else
+            {
+                throw new Exception("Proizvoda vise nema na zalihama!");
+            }
         }
 
         public void UpdatePorudzbinaOnStavke()

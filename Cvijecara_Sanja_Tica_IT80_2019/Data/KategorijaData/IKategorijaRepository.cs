@@ -10,5 +10,6 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KategorijaData
         void UpdateKategorija(Kategorija kategorija);
         void DeleteKategorija(int id);
         bool SaveChanges();
+        List<int> GetAllKategorijaId();
     }
 }

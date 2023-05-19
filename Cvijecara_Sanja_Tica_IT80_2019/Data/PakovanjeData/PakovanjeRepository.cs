@@ -48,5 +48,9 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.PakovanjeData
         {
             //throw new NotImplementedException();
         }
+        public List<int> GetAllPakovanjeId()
+        {
+            return context.Pakovanjes.Select(p => p.PakovanjeId).ToList();
+        }
     }
 }

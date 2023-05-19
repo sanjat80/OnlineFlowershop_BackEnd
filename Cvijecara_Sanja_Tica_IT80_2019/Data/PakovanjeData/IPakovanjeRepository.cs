@@ -10,5 +10,6 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.PakovanjeData
         void UpdatePakovanje(Pakovanje pakovanje);
         void DeletePakovanje(int id);
         bool SaveChanges();
+        List<int> GetAllPakovanjeId();
     }
 }

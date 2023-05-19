@@ -118,5 +118,15 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom azuriranja kategorije.");
             }
         }
+        [HttpGet("vrsteId")]
+        public ActionResult<List<int>> GetAllVrstaId()
+        {
+            var vrste = vrstaRepository.GetAllVrstaId();
+            if(vrste!= null)
+            {
+                return Ok(vrste);
+            }
+            return NotFound();
+        }
     }
 }

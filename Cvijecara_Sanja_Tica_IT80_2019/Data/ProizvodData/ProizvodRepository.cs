@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
+using Cvijecara_Sanja_Tica_IT80_2019.Models.ProizvodModel;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Data.ProizvodData
 {
@@ -43,6 +44,34 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.ProizvodData
         public void UpdateProizvod(Proizvod proizvod)
         {
             //throw new NotImplementedException();
+        }
+
+        public ProizvodFrontDto GetProizvodByIdOnFront(int id)
+        {
+            var proizvod = context.Proizvods.FirstOrDefault(p => p.ProizvodId == id);
+
+            if (proizvod != null)
+            {
+                var kategorija = context.Kategorijas.FirstOrDefault(k => k.KategorijaId == proizvod.KategorijaId);
+                var pakovanje = context.Pakovanjes.FirstOrDefault(p => p.PakovanjeId == proizvod.PakovanjeId);
+                var vrsta = context.Vrsta.FirstOrDefault(v => v.VrstaId == proizvod.VrstaId);
+
+                ProizvodFrontDto proizvodi = new ProizvodFrontDto
+                {
+                    ProizvodId = id,
+                    Naziv = proizvod.Naziv,
+                    Cijena = proizvod.Cijena,
+                    Valuta = proizvod.Valuta,
+                    Velicina = proizvod.Velicina,
+                    Zalihe = proizvod.Zalihe,
+                    Pakovanje = pakovanje.Vrsta,
+                    Kategorija = kategorija.Naziv,
+                    Vrsta = vrsta.Naziv
+                };
+                return proizvodi;
+            }
+
+            return null;
         }
     }
 }

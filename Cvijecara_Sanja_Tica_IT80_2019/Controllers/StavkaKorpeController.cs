@@ -178,7 +178,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, e);
+                return StatusCode(500, "Proizvoda vise nema na zalihama!");
             }
         }
 

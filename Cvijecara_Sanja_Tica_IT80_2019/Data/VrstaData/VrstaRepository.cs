@@ -45,5 +45,10 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.VrstaData
         {
             //throw new NotImplementedException();
         }
+
+        public List<int> GetAllVrstaId()
+        {
+            return context.Vrsta.Select(v => v.VrstaId).ToList();
+        }
     }
 }

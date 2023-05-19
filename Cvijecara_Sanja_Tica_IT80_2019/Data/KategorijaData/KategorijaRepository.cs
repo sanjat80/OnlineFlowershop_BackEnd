@@ -47,5 +47,10 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KategorijaData
         {
             //throw new NotImplementedException();
         }
+
+        public List<int> GetAllKategorijaId()
+        {
+            return context.Kategorijas.Select(k => k.KategorijaId).ToList();
+        }
     }
 }

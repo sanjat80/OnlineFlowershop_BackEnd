@@ -157,5 +157,12 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             }
         }
 
+        [HttpGet("proizvodiZaFront/{id}")]
+        public ActionResult<ProizvodFrontDto> GetProizvodByIdForFront(int id)
+        {
+            var proizvod = proizvodRepository.GetProizvodByIdOnFront(id);
+            return Ok(proizvod);
+        }
+
     }
 }

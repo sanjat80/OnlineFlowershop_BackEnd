@@ -2,6 +2,7 @@
 using Cvijecara_Sanja_Tica_IT80_2019.Data.PakovanjeData;
 using Cvijecara_Sanja_Tica_IT80_2019.Data.TipKorisnikaData;
 using Cvijecara_Sanja_Tica_IT80_2019.Data.ValidationData;
+using Cvijecara_Sanja_Tica_IT80_2019.Data.VrstaData;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.KategorijaModel;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.PakovanjeModel;
@@ -147,6 +148,17 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom azuriranja pakovanja.");
             }
         }
-       
+
+        [HttpGet("pakovanjaId")]
+        public ActionResult<List<int>> GetAllVrstaId()
+        {
+            var pakovanja = pakovanjeRepository.GetAllPakovanjeId();
+            if (pakovanja != null)
+            {
+                return Ok(pakovanja);
+            }
+            return NotFound();
+        }
+
     }
 }

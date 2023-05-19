@@ -10,5 +10,6 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.VrstaData
         void UpdateVrsta(Vrstum vrsta);
         void DeleteVrsta(int id);
         bool SaveChanges();
+        List<int> GetAllVrstaId();
     }
 }
