@@ -148,6 +148,8 @@ public partial class CvijecaraContext : DbContext
             entity.Property(e => e.Valuta)
                 .HasMaxLength(5)
                 .HasColumnName("valuta");
+            entity.Property(e => e.PaymentIntentId).HasColumnName("payment_intent_id").IsRequired(false);
+            entity.Property(e => e.ClientSecret).HasColumnName("client_secret").IsRequired(false);
         });
 
         modelBuilder.Entity<Pakovanje>(entity =>
@@ -196,6 +198,8 @@ public partial class CvijecaraContext : DbContext
             entity.Property(e => e.StatusPorudzbine)
                 .HasMaxLength(15)
                 .HasColumnName("status_porudzbine");
+            entity.Property(e => e.PaymentIntentId).HasColumnName("payment_intent_id").IsRequired(false);
+            entity.Property(e => e.ClientSecret).HasColumnName("client_secret").IsRequired(false);
         });
 
         modelBuilder.Entity<Proizvod>(entity =>

@@ -263,5 +263,22 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorpaData
             }
             return existingKorpa.KorpaId;
         }
+
+        public Korpa GetKorpaFromLoggedUser()
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.ReadJwtToken(_httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", ""));
+            string username = token.Claims.FirstOrDefault(x => x.Type == "unique_name")?.Value;
+            var kupac = context.Korisniks.Where(k => k.KorisnickoIme == username).FirstOrDefault();
+            var existingKorpa = context.Korpas.FirstOrDefault(k => k.KorisnikId == kupac.KorisnikId);
+            if(existingKorpa != null)
+            {
+                return existingKorpa;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

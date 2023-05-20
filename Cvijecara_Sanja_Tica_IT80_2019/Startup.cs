@@ -21,6 +21,7 @@ using Microsoft.OpenApi.Models;
 using Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData;
 using Cvijecara_Sanja_Tica_IT80_2019.Data.ValidationData;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Cvijecara_Sanja_Tica_IT80_2019.Services;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019
 {
@@ -109,6 +110,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019
             services.AddScoped<IKorpaRepository, KorpaRepository>();
             services.AddScoped<IStavkaKorpeRepository, StavkaKorpeRepository>();
             services.AddScoped<IValidationRepository, ValidationRepository>();
+            //services.AddScoped<IPaymentService, PaymentService>();
+            services.AddTransient<PaymentService>();
             services.AddSwaggerGen(c =>
             {
                 var securitySchema = new OpenApiSecurityScheme

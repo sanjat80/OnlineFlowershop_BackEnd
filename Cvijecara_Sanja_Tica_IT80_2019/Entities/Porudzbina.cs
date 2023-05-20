@@ -18,6 +18,8 @@ public partial class Porudzbina
     public decimal? Racun { get; set; }
 
     public decimal? Popust { get; set; }
+    public string? PaymentIntentId { get; set; }
+    public string? ClientSecret { get; set; }
 
     public virtual ICollection<StavkaKorpe> StavkaKorpes { get; } = new List<StavkaKorpe>();
 }

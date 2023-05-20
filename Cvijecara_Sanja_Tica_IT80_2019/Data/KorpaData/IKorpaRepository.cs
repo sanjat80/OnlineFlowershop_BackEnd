@@ -23,5 +23,6 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorpaData
         public List<StavkeKorpeByKorpaId> GetStavkeKorpeByKorpa();
         public KorpaDto GetKorpaFromCurrUser();
         public int GetKorpaFromCurrentUser();
+        Korpa GetKorpaFromLoggedUser();
     }
 }
