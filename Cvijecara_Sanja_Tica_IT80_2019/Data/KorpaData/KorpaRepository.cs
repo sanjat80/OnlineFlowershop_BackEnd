@@ -280,5 +280,31 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorpaData
                 return null;
             }
         }
+        public decimal CalculateKorpaAmount()
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.ReadJwtToken(_httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", ""));
+            string username = token.Claims.FirstOrDefault(x => x.Type == "unique_name")?.Value;
+            var kupac = context.Korisniks.Where(k => k.KorisnickoIme == username).FirstOrDefault();
+            var existingKorpa = context.Korpas.FirstOrDefault(k => k.KorisnikId == kupac.KorisnikId);
+            decimal subtotal = 0;
+
+            if (existingKorpa != null)
+            {
+                var stavkeKorpe = context.StavkaKorpes.Where(sk => sk.KorpaId == existingKorpa.KorpaId).ToList();
+
+                foreach (var stavka in stavkeKorpe)
+                {
+                    var proizvod = context.Proizvods.FirstOrDefault(p => p.ProizvodId == stavka.ProizvodId);
+
+                    if (proizvod != null)
+                    {
+                        decimal stavkaAmount = (decimal)(stavka.Kolicina * proizvod.Cijena);
+                        subtotal += stavkaAmount;
+                    }
+                }
+            }
+            return subtotal;
+        }
     }
 }

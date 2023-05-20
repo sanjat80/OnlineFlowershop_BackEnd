@@ -279,6 +279,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
             int korpaId = existingKorpa.KorpaId;
             var lastPorudzbina = context.Porudzbinas.OrderByDescending(p => p.PorudzbinaId).FirstOrDefault();
             int porudzbinaId = lastPorudzbina.PorudzbinaId;
+            lastPorudzbina.PaymentIntentId = existingKorpa.PaymentIntentId;
             var  stavke = context.StavkaKorpes.Where(sk => sk.KorpaId == korpaId);
             foreach(StavkaKorpe stavka in stavke)
             {

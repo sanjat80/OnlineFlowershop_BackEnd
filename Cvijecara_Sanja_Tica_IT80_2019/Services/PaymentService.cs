@@ -1,15 +1,19 @@
-﻿using Cvijecara_Sanja_Tica_IT80_2019.Entities;
+﻿using Cvijecara_Sanja_Tica_IT80_2019.Data.KorpaData;
+using Cvijecara_Sanja_Tica_IT80_2019.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Services
 {
     public class PaymentService : IPaymentService
     {
         private readonly IConfiguration _config;
-        public PaymentService(IConfiguration config)
+        private readonly IKorpaRepository _korpaRepository;
+        public PaymentService(IConfiguration config, IKorpaRepository korpaRepository)
         {
             _config = config;
+            _korpaRepository = korpaRepository;
         }
 
         public async Task<PaymentIntent> CreateOrUpdatePaymentIntent(Korpa korpa)

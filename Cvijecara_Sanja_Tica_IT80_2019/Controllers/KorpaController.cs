@@ -273,5 +273,11 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             }
             return korpa;
         }
+        [HttpGet("korpaTrenutnoUlogovanog")]
+        public ActionResult<Korpa> GetKorpaTrenutnoUlogovanog()
+        {
+            var korpa = korpaRepository.GetKorpaFromLoggedUser();
+            return Ok(korpa);
+        }
     }
 }
