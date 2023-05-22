@@ -21,7 +21,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Services
             StripeConfiguration.ApiKey = _config["StripeSettings:SecretKey"];
             var service = new PaymentIntentService();
             var intent = new PaymentIntent();
-            var subtotal = korpa.UkupanIznos;
+            var subtotal = _korpaRepository.UpdateKorpaDetails(korpa.KorpaId);
             var deliveryFree = subtotal > 50 ? 0 : 3;
             if(string.IsNullOrEmpty(korpa.PaymentIntentId))
             {

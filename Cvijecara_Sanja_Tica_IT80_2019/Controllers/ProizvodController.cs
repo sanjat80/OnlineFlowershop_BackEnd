@@ -32,9 +32,9 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         [HttpHead]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public ActionResult<List<ProizvodDto>> GetAllProizvod()
+        public ActionResult<List<ProizvodDto>> GetAllProizvod(string? orderBy, string? searchTerm, string? kategorija, string? vrsta)
         {
-            var proizvodi = proizvodRepository.GetAllProizvod();
+            var proizvodi = proizvodRepository.GetAllProizvod(orderBy, searchTerm, kategorija, vrsta);
             if (proizvodi == null || proizvodi.Count == 0)
             {
                 return NoContent();
@@ -55,7 +55,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             return Ok(mapper.Map<ProizvodDto>(proizvod));
         }
 
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, registrovani")]
         [HttpPost]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -116,7 +116,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             }
         }
 
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, registrovani")]
         [HttpPut]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -162,6 +162,13 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         {
             var proizvod = proizvodRepository.GetProizvodByIdOnFront(id);
             return Ok(proizvod);
+        }
+
+        [HttpGet("filteri")]
+        public ActionResult GetFilters()
+        {
+            var (kategorije, vrste) = proizvodRepository.GetFilters();
+            return Ok(new { Kategorije = kategorije, Vrste = vrste });
         }
 
     }

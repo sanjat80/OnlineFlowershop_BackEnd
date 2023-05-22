@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
+using Cvijecara_Sanja_Tica_IT80_2019.Extensions;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.ProizvodModel;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Data.ProizvodData
 {
@@ -26,9 +29,17 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.ProizvodData
             context.Remove(proizvod);
         }
 
-        public List<Proizvod> GetAllProizvod()
+        public List<Proizvod> GetAllProizvod(string? orderBy, string? searchTerm, string? kategorija,string? vrsta)
         {
-            return context.Proizvods.ToList();
+            CvijecaraContext context = new CvijecaraContext();
+            ProizvodExtension.Initialize(context);
+            var query = context.Proizvods
+                .Sort(orderBy)
+                .Search(searchTerm)
+                .Filter(kategorija, vrsta)
+                .AsQueryable();
+
+            return query.ToList();
         }
 
         public Proizvod GetProizvodById(int id)
@@ -72,6 +83,27 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.ProizvodData
             }
 
             return null;
+        }
+
+        public (List<string>kategorije, List<string> vrste) GetFilters()
+        {
+            CvijecaraContext context1 = new CvijecaraContext();
+            CvijecaraContext context2 = new CvijecaraContext();
+            var kategorijaIds = context.Proizvods.Select(p => p.KategorijaId).Distinct().ToList();
+            var vrstaIds = context.Proizvods.Select(p => p.VrstaId).Distinct().ToList();
+
+            var kategorije = context1.Kategorijas
+                .Where(k => kategorijaIds.Contains(k.KategorijaId))
+                .Select(k => k.Naziv)
+                .ToList();
+
+            var vrste = context2.Vrsta
+                .Where(v => vrstaIds.Contains(v.VrstaId))
+                .Select(v => v.Naziv)
+                .ToList();
+
+            return (kategorije, vrste);
+
         }
     }
 }

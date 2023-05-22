@@ -306,5 +306,35 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorpaData
             }
             return subtotal;
         }
+        public decimal UpdateKorpaDetails(int korpaId)
+        {
+            decimal azuriranIznos = 0;
+
+            // Pronađite korpu u bazi podataka na osnovu korpaId
+            var korpa = context.Korpas.FirstOrDefault(k => k.KorpaId == korpaId);
+
+            if (korpa != null)
+            {
+                // Izračunajte količinu i ukupan iznos na osnovu stavki korpe
+                int kolicina = context.StavkaKorpes
+                    .Where(s => s.KorpaId == korpaId)
+                    .Sum(s => s.Kolicina);
+
+                decimal ukupanIznos = (decimal)context.StavkaKorpes
+                    .Where(s => s.KorpaId == korpaId)
+                    .Sum(s => s.Kolicina * s.Proizvod.Cijena);
+
+                // Ažurirajte količinu i ukupan iznos korpe
+                korpa.Kolicina = kolicina;
+                korpa.UkupanIznos = ukupanIznos;
+
+                // Sačuvajte promene u bazi podataka
+                context.SaveChanges();
+
+                azuriranIznos = ukupanIznos;
+            }
+
+            return azuriranIznos;
+        }
     }
 }
