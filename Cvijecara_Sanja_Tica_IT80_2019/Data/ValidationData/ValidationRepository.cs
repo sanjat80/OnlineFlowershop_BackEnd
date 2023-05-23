@@ -109,5 +109,53 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.ValidationData
             }
         }
 
+        public bool ValidatePhoneNumber(string phoneNumber)
+        {
+            // Remove any whitespace characters from the phone number
+            phoneNumber = phoneNumber.Replace(" ", "");
+
+            // Validate the phone number format
+            if (phoneNumber.StartsWith("+") && phoneNumber.Length <= 13)
+            {
+                // Check if the remaining characters are digits
+                for (int i = 1; i < phoneNumber.Length; i++)
+                {
+                    if (!char.IsDigit(phoneNumber[i]))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+        public bool ValidateAddress(string address)
+        {
+            bool hasLetter = false;
+            bool hasNumber = false;
+
+            foreach (char c in address)
+            {
+                if (char.IsLetter(c))
+                {
+                    hasLetter = true;
+                }
+                else if (char.IsDigit(c))
+                {
+                    hasNumber = true;
+                }
+
+                if (hasLetter && hasNumber)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+
     }
 }

@@ -79,6 +79,21 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
             // Get the current user's basket
             var korpa = context.Korpas.Include(k => k.StavkaKorpes)
                                        .FirstOrDefault(k => k.KorisnikId == kupac.KorisnikId);
+            if(korpa == null)
+            {
+                var korpaNovog = new Korpa
+                {
+                    //KorpaId = GenerateNewId(),
+                    Kolicina = 0,
+                    UkupanIznos = 0,
+                    Valuta = "RSD",
+                    KorisnikId = kupac.KorisnikId
+                };
+                context.Add(korpaNovog);
+                context.SaveChanges();
+
+                korpa = korpaNovog;
+            }
 
             // Check if the product already exists in the basket
             var existingStavka = korpa.StavkaKorpes.FirstOrDefault(s => s.ProizvodId == proizvodId);

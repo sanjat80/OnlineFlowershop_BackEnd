@@ -2,11 +2,13 @@
 {
     public interface IValidationRepository
     {
-        public bool ValidateValuta(string valuta);
-        public bool IsValidEmail(string email);
-        public bool ValidatePassword(string password);
-        public bool ValidateDatumIsporuke(DateTime date);
-        public bool IsEmailUnique(string email);
-        public bool IsUsernameUnique(string username);
+        bool ValidateValuta(string valuta);
+        bool IsValidEmail(string email);
+        bool ValidatePassword(string password);
+        bool ValidateDatumIsporuke(DateTime date);
+        bool IsEmailUnique(string email);
+        bool IsUsernameUnique(string username);
+        bool ValidatePhoneNumber(string phoneNumber);
+        bool ValidateAddress(string address);
     }
 }

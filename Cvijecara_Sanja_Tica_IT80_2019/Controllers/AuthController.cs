@@ -34,12 +34,12 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             Korisnik user = _korisnikRepository.GetKorisnikByKorisnickoIme(korisnik.KorisnickoIme);
             if (user == null)
             {
-                return NotFound("Ne postoji korisnik sa datim korisnickim imenom.");
+                return StatusCode(400,"Ne postoji korisnik sa datim korisnickim imenom.");
 
             }
             else if (!BCrypt.Net.BCrypt.Verify(korisnik.Lozinka,user.Lozinka))
             {
-                return Unauthorized("Ne poklapaju se lozinka i username.");
+                return StatusCode(400,"Ne poklapaju se lozinka i username.");
             }
             string tip;
             if(user.TipId == 1)
@@ -83,6 +83,14 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                     if (!validationRepository.IsUsernameUnique(korisnik.KorisnickoIme))
                     {
                         return BadRequest("Korisnik sa datim korisnickim imenom vec postoji!");
+                    }
+                    if(!validationRepository.ValidatePhoneNumber(korisnik.BrojTelefona))
+                    {
+                        return BadRequest("Broj telefona mora biti broj(+ znak je dozvoljen) i sadržati maksimalno 13 cifara!");
+                    }
+                    if(!validationRepository.ValidateAddress(korisnik.Adresa))
+                    {
+                        return BadRequest("Adresa bi trebalo da sadrži naziv ulice i broj.");
                     }
                     string? lozinka = korisnik.Lozinka;
                     string lozinka2 = BCrypt.Net.BCrypt.HashPassword(lozinka);
