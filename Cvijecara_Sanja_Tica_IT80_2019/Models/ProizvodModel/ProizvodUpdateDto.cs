@@ -19,6 +19,7 @@
         public int KategorijaId { get; set; }
 
         public int VrstaId { get; set; }
+        public string? Slika { get; set; }
 
     }
 }

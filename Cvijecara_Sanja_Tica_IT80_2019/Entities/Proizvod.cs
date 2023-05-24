@@ -26,6 +26,7 @@ public partial class Proizvod
     public int KategorijaId { get; set; }
     [ForeignKey("Vrstum")]
     public int VrstaId { get; set; }
+    public string? Slika { get; set; }
 
     public virtual Kategorija Kategorija { get; set; } = null!;
 

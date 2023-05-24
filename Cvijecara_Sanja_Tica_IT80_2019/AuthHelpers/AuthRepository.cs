@@ -44,7 +44,9 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.AuthHelpers
             {
                 Token = tknHandler.WriteToken(token),
                 Expires = String.Format("{0:dd-MM-yyyy hh:mm:ss}", (DateTime)tknDscrptr.Expires),
-                KorisnickoIme = korisnickoIme
+                KorisnickoIme = korisnickoIme,
+                Uloga = tipKorisnika
+                
             };
             return tokenResp;
         }

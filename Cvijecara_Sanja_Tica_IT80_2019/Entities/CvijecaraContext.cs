@@ -224,6 +224,7 @@ public partial class CvijecaraContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("velicina");
             entity.Property(e => e.VrstaId).HasColumnName("vrsta_id");
+            entity.Property(e => e.Slika).HasColumnName("slika");
             entity.Property(e => e.Zalihe)
                 .HasColumnType("numeric(8, 2)")
                 .HasColumnName("zalihe");

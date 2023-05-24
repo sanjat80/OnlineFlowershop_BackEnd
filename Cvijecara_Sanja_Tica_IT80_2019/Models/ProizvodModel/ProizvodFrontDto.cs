@@ -23,5 +23,6 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Models.ProizvodModel
         public string Kategorija { get; set; }
 
         public string Vrsta { get; set; }
+        public string? Slika { get; set; }
     }
 }

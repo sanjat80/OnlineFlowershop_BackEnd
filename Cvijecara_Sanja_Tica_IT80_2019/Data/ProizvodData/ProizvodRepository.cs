@@ -77,7 +77,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.ProizvodData
                     Zalihe = proizvod.Zalihe,
                     Pakovanje = pakovanje.Vrsta,
                     Kategorija = kategorija.Naziv,
-                    Vrsta = vrsta.Naziv
+                    Vrsta = vrsta.Naziv,
+                    Slika = proizvod.Slika
                 };
                 return proizvodi;
             }

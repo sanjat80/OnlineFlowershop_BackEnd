@@ -16,8 +16,8 @@
         public int? PakovanjeId { get; set; }
 
         public int KategorijaId { get; set; }
-
         public int VrstaId { get; set; }
+        public string? Slika { get; set; }
 
     }
 }
