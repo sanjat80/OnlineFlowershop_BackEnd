@@ -117,5 +117,11 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom azuriranja tipa korisnika.");
             }
         }
+        [HttpGet("tipoviKorisnikaId")]
+        public ActionResult<List<int>> GetAllTipoviKorisnikaId()
+        {
+            var tipovi = tipRepository.GetAllTipoviId();
+            return Ok(tipovi);
+        }
     }
 }

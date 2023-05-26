@@ -14,5 +14,6 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorisnikData
         bool SaveChanges();
         public KorisnikDto GetCurrentUser();
         public KorisnikKorpaDto GetKorpaForCurrentUser();
+        KorisnikUpdateRegistrationDto GetKorisnikByKorisnickoImeProfile(string korisnickoIme);
     }
 }

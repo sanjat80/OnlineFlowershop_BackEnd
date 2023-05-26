@@ -1,9 +1,12 @@
 ﻿using Cvijecara_Sanja_Tica_IT80_2019.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Models.KorisnikModel
 {
     public class KorisnikDto
     {
+        [Key]
+        public int KorisnikId { get; set; }
         public string Ime { get; set; } = null!;
 
         public string Prezime { get; set; } = null!;

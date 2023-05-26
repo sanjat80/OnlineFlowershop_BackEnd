@@ -47,5 +47,10 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.TipKorisnikaData
         {
             //throw new NotImplementedException();
         }
+
+        public List<int> GetAllTipoviId()
+        {
+            return context.TipKorisnikas.Select(t => t.TipId).ToList();
+        }
     }
 }

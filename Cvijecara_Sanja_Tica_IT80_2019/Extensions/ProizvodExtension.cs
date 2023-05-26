@@ -36,7 +36,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Extensions
             return query.Where(p => p.Naziv.ToLower().Contains(lowerCaseSearchTerm));
         }
 
-        public static IQueryable<Proizvod> Filter(this IQueryable<Proizvod> query, string kategorija, string vrsta)
+        /*public static IQueryable<Proizvod> Filter(this IQueryable<Proizvod> query, string kategorija, string vrsta)
         {
             var filteredQuery = query;
 
@@ -59,6 +59,37 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Extensions
             }
 
             return filteredQuery;
+        }*/
+        public static IQueryable<Proizvod> Filter(this IQueryable<Proizvod> query, string kategorija, string vrsta)
+        {
+            var filteredQuery = query;
+
+            if (!string.IsNullOrEmpty(kategorija))
+            {
+                using (var kategorijaContext = new CvijecaraContext())
+                {
+                    var kategorijaId = kategorijaContext.Kategorijas.FirstOrDefault(k => k.Naziv.ToLower() == kategorija.ToLower())?.KategorijaId;
+                    if (kategorijaId != null)
+                    {
+                        filteredQuery = filteredQuery.Where(p => p.KategorijaId == kategorijaId);
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(vrsta))
+            {
+                using (var vrstaContext = new CvijecaraContext())
+                {
+                    var vrstaId = vrstaContext.Vrsta.FirstOrDefault(v => v.Naziv.ToLower() == vrsta.ToLower())?.VrstaId;
+                    if (vrstaId != null)
+                    {
+                        filteredQuery = filteredQuery.Where(p => p.VrstaId == vrstaId);
+                    }
+                }
+            }
+
+            return filteredQuery;
         }
+
     }
 }

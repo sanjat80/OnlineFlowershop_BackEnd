@@ -87,6 +87,12 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorisnikData
             return korisnik;
         }
 
+        public KorisnikUpdateRegistrationDto GetKorisnikByKorisnickoImeProfile(string korisnickoIme)
+        {
+            var user =  context.Korisniks.FirstOrDefault(ki => ki.KorisnickoIme == korisnickoIme);
+            return mapper.Map<KorisnikUpdateRegistrationDto>(user);
+        }
+
 
     }
 }

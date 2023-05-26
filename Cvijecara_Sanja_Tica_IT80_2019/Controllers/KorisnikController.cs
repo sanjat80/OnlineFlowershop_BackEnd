@@ -153,14 +153,14 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                     {
                         return BadRequest("Lozinka nije unesena u dobrom formatu: mora sadrzati bar 8 karaktera, bar jedno veliko i jedno malo slovo, bar jednu cifru i jedan specijalni karakter.");
                     }
-                    if (!validationRepository.IsEmailUnique(korisnik.Email))
+                    /*if (!validationRepository.IsEmailUnique(korisnik.Email))
                     {
                         return BadRequest("Korisnik sa datim email-om vec postoji!");
-                    }
-                    if (!validationRepository.IsUsernameUnique(korisnik.KorisnickoIme))
+                    }*/
+                    /*if (!validationRepository.IsUsernameUnique(korisnik.KorisnickoIme))
                     {
                         return BadRequest("Korisnik sa datim korisnickim imenom vec postoji!");
-                    }
+                    }*/
                     var stariKorisnik = korisnikRepository.GetKorisnikById(korisnik.KorisnikId);
                     if (stariKorisnik == null)
                     {
@@ -271,6 +271,12 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             {
                 return NotFound();
             }
+            return Ok(korisnik);
+        }
+        [HttpGet("profil/{korisnickoIme}")]
+        public ActionResult<KorisnikUpdateRegistrationDto> GetKorisnikByKorisnickoIme([FromRoute]string korisnickoIme)
+        {
+            var korisnik = korisnikRepository.GetKorisnikByKorisnickoImeProfile(korisnickoIme);
             return Ok(korisnik);
         }
 

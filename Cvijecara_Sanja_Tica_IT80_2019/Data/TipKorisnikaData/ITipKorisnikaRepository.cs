@@ -10,5 +10,6 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.TipKorisnikaData
         void UpdateTipKorisnika(TipKorisnika tipKorisnika);
         void DeleteTipKorisnika(int id);
         bool SaveChanges();
+        List<int> GetAllTipoviId();
     }
 }
