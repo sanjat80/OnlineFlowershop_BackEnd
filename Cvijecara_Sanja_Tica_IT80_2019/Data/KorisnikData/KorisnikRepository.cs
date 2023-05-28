@@ -93,6 +93,11 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorisnikData
             return mapper.Map<KorisnikUpdateRegistrationDto>(user);
         }
 
+        public void UpdateKorisnikByAdmin(KorisnikAdminUpdate korisnik)
+        {
+            //
+        }
+
 
     }
 }

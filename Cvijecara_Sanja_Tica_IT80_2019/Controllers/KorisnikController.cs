@@ -280,5 +280,15 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             return Ok(korisnik);
         }
 
+        [HttpPut("adminUpdate")]
+        public ActionResult<KorisnikDto> UpdateKorisnikByAdmin(KorisnikAdminUpdate korisnikAdmin)
+        {
+            var korisnik = korisnikRepository.GetKorisnikById(korisnikAdmin.KorisnikId);
+            korisnik.StatusKorisnika = korisnikAdmin.StatusKorisnika;
+            korisnik.TipId = korisnikAdmin.TipId;
+            korisnikRepository.SaveChanges();
+            return Ok(korisnik);
+        }
+
     }
 }
