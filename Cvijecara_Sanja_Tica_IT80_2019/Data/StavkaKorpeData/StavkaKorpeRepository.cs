@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Cvijecara_Sanja_Tica_IT80_2019.Entities;
+using Cvijecara_Sanja_Tica_IT80_2019.Models.KorpaModel;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.ProizvodModel;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.StavkaKorpeModel;
 using Microsoft.AspNetCore.Mvc;
@@ -102,10 +103,10 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
             {
                 if (existingStavka != null)
                 {
-                    existingStavka.Kolicina++;
+                    //existingStavka.Kolicina++;
 
                     proizvod.Zalihe--;
-
+                    existingStavka.Kolicina++;
                 }
                 else
                 {
@@ -266,17 +267,9 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
             var proizvod = context.Proizvods.FirstOrDefault(p => p.ProizvodId == prId);
             if (proizvod.Zalihe > 0)
             {
-                stavka.Kolicina++;
-                proizvod.Zalihe--;
-                var skorpe = new StavkeKorpeByKorpaId
-                {
-                    Naziv = proizvod.Naziv,
-                    Kolicina = stavka.Kolicina,
-                    Cijena = (double)(proizvod.Cijena * stavka.Kolicina),
-                    ProizvodId = prId
-                };
+                stavka.Kolicina = 
                 context.SaveChanges();
-                return skorpe;
+                return mapper.Map<StavkeKorpeByKorpaId>(stavka);
             }
             else
             {
@@ -295,6 +288,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
             var lastPorudzbina = context.Porudzbinas.OrderByDescending(p => p.PorudzbinaId).FirstOrDefault();
             int porudzbinaId = lastPorudzbina.PorudzbinaId;
             lastPorudzbina.PaymentIntentId = existingKorpa.PaymentIntentId;
+            lastPorudzbina.ClientSecret = existingKorpa.ClientSecret;
             var  stavke = context.StavkaKorpes.Where(sk => sk.KorpaId == korpaId);
             foreach(StavkaKorpe stavka in stavke)
             {
@@ -302,6 +296,21 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
             }
             context.SaveChanges();
             
+        }
+        public KorpaDto GetKorpaFromCurrentUser()
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.ReadJwtToken(httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", ""));
+            string username = token.Claims.FirstOrDefault(x => x.Type == "unique_name")?.Value;
+            var kupac = context.Korisniks.Where(k => k.KorisnickoIme == username).FirstOrDefault();
+            var existingKorpa = context.Korpas.FirstOrDefault(k => k.KorisnikId == kupac.KorisnikId);
+            return mapper.Map<KorpaDto>(existingKorpa);
+        }
+        public void DeleteAllStavkeKorpeFromKorpa()
+        {
+            var korpa = GetKorpaFromCurrentUser();
+            int korpaId = korpa.KorpaId;
+
         }
 
     }
