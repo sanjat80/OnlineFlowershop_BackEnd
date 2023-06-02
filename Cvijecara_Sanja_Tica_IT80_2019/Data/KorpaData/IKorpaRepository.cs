@@ -26,5 +26,6 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorpaData
         Korpa GetKorpaFromLoggedUser();
         decimal CalculateKorpaAmount();
         decimal UpdateKorpaDetails(int korpaId);
+        void DeleteKorpaFromCurrentUser();
     }
 }

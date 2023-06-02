@@ -19,6 +19,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
         StavkeKorpeByKorpaId ChangeKolicina(int proizvodId);
         StavkeKorpeByKorpaId AddStavkaKorpeToUKorpaForPlus(DodajProizvod proizvodId);
         void UpdatePorudzbinaOnStavke();
+        void DeleteAllStavkeKorpeFromKorpa();
 
 
     }

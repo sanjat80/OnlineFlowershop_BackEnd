@@ -279,5 +279,11 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             var korpa = korpaRepository.GetKorpaFromLoggedUser();
             return Ok(korpa);
         }
+        [HttpDelete("korpaTrenutnog")]
+        public ActionResult DeleteKorpaFromCurrentUser()
+        {
+            korpaRepository.DeleteKorpaFromCurrentUser();
+            return Ok("Uspjesno obrisana korpa trenutnog korisnika!");
+        }
     }
 }

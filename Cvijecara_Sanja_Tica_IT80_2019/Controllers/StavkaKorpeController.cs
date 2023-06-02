@@ -188,5 +188,12 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             stavkaKorpeRepository.UpdatePorudzbinaOnStavke();
             return Ok("Azurirana porudzbina za date stavke korpe!");
         }
+
+        [HttpDelete("isprazniKorpu")]
+        public ActionResult RemoveEverythingFromKorpa()
+        {
+            stavkaKorpeRepository.DeleteAllStavkeKorpeFromKorpa();
+            return Ok("Vasa korpa je ispraznjena!");
+        }
     }
 }

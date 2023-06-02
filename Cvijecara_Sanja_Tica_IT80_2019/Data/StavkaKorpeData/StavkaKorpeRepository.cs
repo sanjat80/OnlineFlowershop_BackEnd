@@ -310,6 +310,10 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
         {
             var korpa = GetKorpaFromCurrentUser();
             int korpaId = korpa.KorpaId;
+            var stavkeKorpe = context.StavkaKorpes.Where(s => s.KorpaId == korpaId).ToList();
+
+            context.StavkaKorpes.RemoveRange(stavkeKorpe);
+            context.SaveChanges();
 
         }
 

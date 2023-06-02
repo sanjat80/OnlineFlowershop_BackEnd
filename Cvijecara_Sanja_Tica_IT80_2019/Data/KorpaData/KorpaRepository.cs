@@ -336,5 +336,12 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorpaData
 
             return azuriranIznos;
         }
+
+        public void DeleteKorpaFromCurrentUser()
+        {
+            var korpa = GetKorpaFromToken();
+            context.Remove(korpa);
+            context.SaveChanges();
+        }
     }
 }
