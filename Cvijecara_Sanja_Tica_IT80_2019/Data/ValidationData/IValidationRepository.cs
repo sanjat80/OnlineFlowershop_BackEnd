@@ -10,5 +10,8 @@
         bool IsUsernameUnique(string username);
         bool ValidatePhoneNumber(string phoneNumber);
         bool ValidateAddress(string address);
+        bool ValidateCountry(string country);
+        bool ValidateCity(string city);
+        bool ValidateRegion(string region);
     }
 }

@@ -155,6 +155,68 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.ValidationData
 
             return false;
         }
+        public bool ValidateCountry(string country)
+        {
+            string[] validCountries = { "Srbija", "Hrvatska", "Crna Gora", "Bosna i Hercegovina" };
+
+            foreach (string validCountry in validCountries)
+            {
+                if (string.Equals(country, validCountry, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        public bool ValidateRegion(string region)
+        {
+            string[] validRegions = { 
+        // Srbija
+        "Vojvodina", "Beograd", "Šumadija", "Zapadna Srbija", "Južna Srbija", "Istočna Srbija",
+        // Hrvatska
+        "Zagreb", "Sjeverna Hrvatska", "Središnja Hrvatska", "Istočna Hrvatska", "Zapadna Hrvatska", "Južna Hrvatska",
+        // Crna Gora
+        "Crnogorsko Primorje", "Crnogorsko Gorje", "Crnogorsko Polje", "Centralna Crna Gora", "Crnogorsko Primorje", "Južna Crna Gora",
+        // Bosna i Hercegovina
+        "Sarajevo", "Sjeveroistočna Bosna", "Posavina", "Srednja Bosna", "Hercegovina-Zapad", "Hercegovina-Jug", "Zapadnohercegovački kanton"
+    };
+
+            foreach (string validRegion in validRegions)
+            {
+                if (string.Equals(region, validRegion, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool ValidateCity(string city)
+        {
+            string[] validCities = { 
+        // Srbija
+        "Novi Sad", "Beograd", "Niš", "Kragujevac", "Subotica", "Čačak",
+        // Hrvatska
+        "Zagreb", "Split", "Rijeka", "Osijek", "Zadar", "Dubrovnik",
+        // Crna Gora
+        "Podgorica", "Nikšić", "Pljevlja", "Cetinje", "Bar", "Herceg Novi",
+        // Bosna i Hercegovina
+        "Trebinje","Sarajevo", "Banja Luka", "Prijedor", "Doboj", "Modrica", "Gacko"
+    };
+
+            foreach (string validCity in validCities)
+            {
+                if (string.Equals(city, validCity, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
 
 
     }

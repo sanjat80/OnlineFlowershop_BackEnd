@@ -8,6 +8,7 @@ using Cvijecara_Sanja_Tica_IT80_2019.Models.DetaljiIsporukeModel;
 using Cvijecara_Sanja_Tica_IT80_2019.Models.KategorijaModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
 {
@@ -73,6 +74,27 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                     {
                         return BadRequest("Datum isporuke ne moze biti danasnji datum, potrebno je navesti datum makar za jedan dan udaljen od danasnjeg!");
                     }
+                    if (!validationRepository.ValidateAddress(detaljiIsporuke.Adresa))
+                    {
+                        return BadRequest("Adresa bi trebalo da sadrži naziv ulice i broj.");
+                    }
+                    if (!validationRepository.ValidatePhoneNumber(detaljiIsporuke.BrojTelefona))
+                    {
+                        return BadRequest("Broj telefona mora biti broj(+ znak je dozvoljen) i sadržati maksimalno 13 cifara!");
+                    }
+                    if (!validationRepository.ValidateCountry(detaljiIsporuke.Drzava))
+                    {
+                        return BadRequest("Drzave u kojima je moguca isporuka su Srbija, BiH, Crna Gora i Hrvatska!");
+                    }
+                    if (!validationRepository.ValidateRegion(detaljiIsporuke.Region))
+                    {
+                        return BadRequest("Regioni koji su podrzani su: \"Vojvodina\", \"Beograd\", \"Šumadija\", \"Zapadna Srbija\", \"Južna Srbija\", \"Istočna Srbija\",\r\n        // Hrvatska\r\n        \"Zagreb\", \"Sjeverna Hrvatska\", \"Središnja Hrvatska\", \"Istočna Hrvatska\", \"Zapadna Hrvatska\", \"Južna Hrvatska\",\r\n        // Crna Gora\r\n        \"Crnogorsko Primorje\", \"Crnogorsko Gorje\", \"Crnogorsko Polje\", \"Centralna Crna Gora\", \"Crnogorsko Primorje\", \"Južna Crna Gora\",\r\n        // Bosna i Hercegovina\r\n        \"Sarajevo\", \"Sjeveroistočna Bosna\", \"Posavina\", \"Srednja Bosna\", \"Hercegovina-Zapad\", \"Hercegovina-Jug\", \"Zapadnohercegovački kanton\"");
+                    }
+                    if (!validationRepository.ValidateCity(detaljiIsporuke.Grad))
+                    {
+                        return BadRequest("Gradovi koji su podrzani su:  // Srbija\r\n        \"Novi Sad\", \"Beograd\", \"Niš\", \"Kragujevac\", \"Subotica\", \"Čačak\",\r\n        // Hrvatska\r\n        \"Zagreb\", \"Split\", \"Rijeka\", \"Osijek\", \"Zadar\", \"Dubrovnik\",\r\n        // Crna Gora\r\n        \"Podgorica\", \"Nikšić\", \"Pljevlja\", \"Cetinje\", \"Bar\", \"Herceg Novi\",\r\n        // Bosna i Hercegovina\r\n        \"Trebinje\",\"Sarajevo\", \"Banja Luka\", \"Prijedor\", \"Doboj\", \"Modrica\", \"Gacko\"");
+                    }
+
                     DetaljiIsporuke detalji = mapper.Map<DetaljiIsporuke>(detaljiIsporuke);
                     var porudzbina = detalji.PorudzbinaId;
                     List<int> porudzbine = detaljiIsporukeRepository.GetAllPorudzbinaId();
@@ -168,9 +190,36 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         [HttpPost("detaljiPorudzbine")]
         public ActionResult<DetaljiIsporukeDto> CreateDetaljiIsporukeForPorudzbina([FromBody] DetaljiIsporukePorudzbinaDto detaljiIsporuke)
         {
+            if (ModelState.IsValid)
+            {
+                
+                if (!validationRepository.ValidateAddress(detaljiIsporuke.Adresa))
+                {
+                    return BadRequest("Adresa bi trebalo da sadrži naziv ulice i broj.");
+                }
+                if (!validationRepository.ValidatePhoneNumber(detaljiIsporuke.BrojTelefona))
+                {
+                    return BadRequest("Broj telefona mora biti broj(+ znak je dozvoljen) i sadržati maksimalno 13 cifara!");
+                }
+                if (!validationRepository.ValidateCountry(detaljiIsporuke.Drzava))
+                {
+                    return BadRequest("Drzave u kojima je moguca isporuka su Srbija, BiH, Crna Gora i Hrvatska!");
+                }
+                if (!validationRepository.ValidateRegion(detaljiIsporuke.Region))
+                {
+                    return BadRequest("Regioni koji su podrzani su: \"Vojvodina\", \"Beograd\", \"Šumadija\", \"Zapadna Srbija\", \"Južna Srbija\", \"Istočna Srbija\",\r\n        // Hrvatska\r\n        \"Zagreb\", \"Sjeverna Hrvatska\", \"Središnja Hrvatska\", \"Istočna Hrvatska\", \"Zapadna Hrvatska\", \"Južna Hrvatska\",\r\n        // Crna Gora\r\n        \"Crnogorsko Primorje\", \"Crnogorsko Gorje\", \"Crnogorsko Polje\", \"Centralna Crna Gora\", \"Crnogorsko Primorje\", \"Južna Crna Gora\",\r\n        // Bosna i Hercegovina\r\n        \"Sarajevo\", \"Sjeveroistočna Bosna\", \"Posavina\", \"Srednja Bosna\", \"Hercegovina-Zapad\", \"Hercegovina-Jug\", \"Zapadnohercegovački kanton\"");
+                }
+                if (!validationRepository.ValidateCity(detaljiIsporuke.Grad))
+                {
+                    return BadRequest("Gradovi koji su podrzani su:  // Srbija\r\n        \"Novi Sad\", \"Beograd\", \"Niš\", \"Kragujevac\", \"Subotica\", \"Čačak\",\r\n        // Hrvatska\r\n        \"Zagreb\", \"Split\", \"Rijeka\", \"Osijek\", \"Zadar\", \"Dubrovnik\",\r\n        // Crna Gora\r\n        \"Podgorica\", \"Nikšić\", \"Pljevlja\", \"Cetinje\", \"Bar\", \"Herceg Novi\",\r\n        // Bosna i Hercegovina\r\n        \"Trebinje\",\"Sarajevo\", \"Banja Luka\", \"Prijedor\", \"Doboj\", \"Modrica\", \"Gacko\"");
+                }
                 var detalji = detaljiIsporukeRepository.CreateDetaljiForKorpa(detaljiIsporuke);
                 return Ok(detalji);
-
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
     }
 }

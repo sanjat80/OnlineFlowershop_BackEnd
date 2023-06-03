@@ -83,6 +83,14 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                     {
                         return BadRequest("Korisnik sa datim korisnickim imenom vec postoji!");
                     }
+                    if (!validationRepository.ValidatePhoneNumber(korisnik.BrojTelefona))
+                    {
+                        return BadRequest("Broj telefona mora biti broj(+ znak je dozvoljen) i sadržati maksimalno 13 cifara!");
+                    }
+                    if (!validationRepository.ValidateAddress(korisnik.Adresa))
+                    {
+                        return BadRequest("Adresa bi trebalo da sadrži naziv ulice i broj.");
+                    }
                     string? lozinka = korisnik.Lozinka;
                     string lozinka2 = BCrypt.Net.BCrypt.HashPassword(lozinka);
                     korisnik.Lozinka = lozinka2;
@@ -161,6 +169,14 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                     {
                         return BadRequest("Korisnik sa datim korisnickim imenom vec postoji!");
                     }*/
+                    if (!validationRepository.ValidatePhoneNumber(korisnik.BrojTelefona))
+                    {
+                        return BadRequest("Broj telefona mora biti broj(+ znak je dozvoljen) i sadržati maksimalno 13 cifara!");
+                    }
+                    if (!validationRepository.ValidateAddress(korisnik.Adresa))
+                    {
+                        return BadRequest("Adresa bi trebalo da sadrži naziv ulice i broj.");
+                    }
                     var stariKorisnik = korisnikRepository.GetKorisnikById(korisnik.KorisnikId);
                     if (stariKorisnik == null)
                     {
