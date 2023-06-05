@@ -15,9 +15,6 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Models.ProizvodModel
         public string? Velicina { get; set; }
 
         public decimal Zalihe { get; set; }
-        /*public int PakovanjeId { get; set; }
-        public int KategorijaId { get; set; }
-        public int VrstaId { get; set; }*/
         public string Pakovanje { get; set; }
 
         public string Kategorija { get; set; }

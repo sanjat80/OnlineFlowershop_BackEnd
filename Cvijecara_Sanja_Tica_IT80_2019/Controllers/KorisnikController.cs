@@ -202,7 +202,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             }
         }
         [HttpPut("registrovani")]
-        [Authorize(Roles ="registrovani")]
+        [Authorize(Roles ="registrovani, admin")]
         //[Route("/registrovani")]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -210,8 +210,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<KorisnikDto> UpdateRegistrovaniKorisnik(KorisnikUpdateRegistrationDto korisnik)
         {
-            try
-            {
+            //try
+            //{
                 if (ModelState.IsValid)
                 {
                     if (!validationRepository.IsValidEmail(korisnik.Email))
@@ -222,35 +222,41 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
                     {
                         return BadRequest("Lozinka nije unesena u dobrom formatu: mora sadrzati bar 8 karaktera, bar jedno veliko i jedno malo slovo, bar jednu cifru i jedan specijalni karakter.");
                     }
-                    if(!validationRepository.IsEmailUnique(korisnik.Email))
+                    /*if(!validationRepository.IsEmailUnique(korisnik.Email))
                     {
                         return BadRequest("Korisnik sa datim email-om vec postoji!");
                     }
                     if(!validationRepository.IsUsernameUnique(korisnik.KorisnickoIme))
                     {
                         return BadRequest("Korisnik sa datim korisnickim imenom vec postoji!");
-                    }
-                    var stariKorisnik = korisnikRepository.GetKorisnikById(korisnik.KorisnikId);
-                    if (stariKorisnik == null)
+                    }*/
+                    var stari = korisnikRepository.GetKorisnikByKorisnickoIme(korisnik.KorisnickoIme);
+                    int id = stari.KorisnikId;
+                    var userStari = korisnikRepository.GetKorisnikById(id);
+                    if (userStari == null)
                     {
                         return NotFound("Korisnik sa proslijedjenim id-em nije pronadjen.");
                     }
                     string? lozinka = korisnik.Lozinka;
                     string lozinka2 = BCrypt.Net.BCrypt.HashPassword(lozinka);
-                    korisnik.Lozinka = lozinka2;
-                    Korisnik user = mapper.Map<Korisnik>(korisnik);
-                    user.TipId = 2;
-                    user.StatusKorisnika = "aktivan";
-                    mapper.Map(user, stariKorisnik);
+                    userStari.Lozinka = lozinka2;
+                    userStari.TipId = 2;
+                    userStari.StatusKorisnika = "aktivan";
+                    userStari.Adresa = korisnik.Adresa;
+                    userStari.Email = korisnik.Email;
+                    userStari.BrojTelefona = korisnik.BrojTelefona;
+                    userStari.Prezime = korisnik.Prezime;
+                    userStari.Ime = korisnik.Ime;
+                    userStari.Lozinka = lozinka2;
                     korisnikRepository.SaveChanges();
-                    return Ok(mapper.Map<KorisnikUpdateRegistrationDto>(stariKorisnik));
+                    return Ok(mapper.Map<KorisnikUpdateRegistrationDto>(userStari));
                 }
                 else
                 {
                     return BadRequest(ModelState);
                 }
-            }
-            catch (Microsoft.EntityFrameworkCore.DbUpdateException)
+            //}
+            /*catch (Microsoft.EntityFrameworkCore.DbUpdateException)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Proslijedjeni tip korisnika ne postoji u bazi!");
             }
@@ -258,7 +264,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Greska prilikom azuriranja korisnika.");
-            }
+            }*/
         }
         [Authorize(Roles ="registrovani, admin")]
         [Produces("application/json")]

@@ -5,6 +5,7 @@ using Cvijecara_Sanja_Tica_IT80_2019.Models.KorpaModel;
 using Cvijecara_Sanja_Tica_IT80_2019.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 
 namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
 {
@@ -16,12 +17,14 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
         private readonly CvijecaraContext _context;
         private readonly IKorpaRepository _korpaRepository;
         private readonly IMapper _mapper;
-        public PaymentsController(PaymentService paymentService, CvijecaraContext context, IKorpaRepository korpaRepository, IMapper mapper)
+        private readonly IConfiguration _configuration;
+        public PaymentsController(PaymentService paymentService, CvijecaraContext context, IKorpaRepository korpaRepository, IMapper mapper,IConfiguration configuration)
         {
             _context = context;
             _paymentService = paymentService;
             _korpaRepository = korpaRepository;
             _mapper = mapper;
+            _configuration = configuration;
         }
 
         [HttpPost]
@@ -42,6 +45,21 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Controllers
 
             if (!result) return BadRequest(new ProblemDetails { Title = "Problem izmjene payment intenta date korpe" });
             return _mapper.Map<KorpaDto>(korpa);
+        }
+        [HttpPost("webhook")]
+        public async Task<ActionResult> StripeWebhook()
+        {
+            var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+            var stripeEvent = EventUtility.ConstructEvent(json, Request.Headers["Stripe-Signature"],
+                _configuration["StripeSettings:WhSecret"]);
+            var charge = (Charge)stripeEvent.Data.Object;
+            var order = _context.Porudzbinas.FirstOrDefault(p =>
+            p.PaymentIntentId == charge.PaymentIntentId);
+            if (charge.Status == "succeeded")
+                order.StatusPorudzbine = "Placeno";
+
+            await _context.SaveChangesAsync();
+            return new EmptyResult();
         }
     }
 }

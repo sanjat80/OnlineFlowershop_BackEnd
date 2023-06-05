@@ -87,7 +87,7 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
                     //KorpaId = GenerateNewId(),
                     Kolicina = 0,
                     UkupanIznos = 0,
-                    Valuta = "RSD",
+                    Valuta = "EUR",
                     KorisnikId = kupac.KorisnikId
                 };
                 context.Add(korpaNovog);
@@ -286,7 +286,8 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.StavkaKorpeData
             var existingKorpa = context.Korpas.FirstOrDefault(k => k.KorisnikId == kupac.KorisnikId);
             int korpaId = existingKorpa.KorpaId;
             var lastPorudzbina = context.Porudzbinas.OrderByDescending(p => p.PorudzbinaId).FirstOrDefault();
-            int porudzbinaId = lastPorudzbina.PorudzbinaId;
+            //int porudzbinaId = lastPorudzbina.PorudzbinaId;
+            int porudzbinaId = lastPorudzbina != null ? lastPorudzbina.PorudzbinaId : 0; // Možete koristiti podrazumevanu vrednost ako je rezultat null
             lastPorudzbina.PaymentIntentId = existingKorpa.PaymentIntentId;
             lastPorudzbina.ClientSecret = existingKorpa.ClientSecret;
             var  stavke = context.StavkaKorpes.Where(sk => sk.KorpaId == korpaId);

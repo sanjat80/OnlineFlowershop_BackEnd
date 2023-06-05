@@ -58,11 +58,6 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorisnikData
             return context.Korisniks.FirstOrDefault(ki => ki.KorisnickoIme == korisnickoIme);
         }
 
-        /*public string GetTipKorisnikaByTipId()
-        {
-            var tip = 
-        }*/
-
         public KorisnikDto GetCurrentUser()
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -96,6 +91,10 @@ namespace Cvijecara_Sanja_Tica_IT80_2019.Data.KorisnikData
         public void UpdateKorisnikByAdmin(KorisnikAdminUpdate korisnik)
         {
             //
+        }
+        public void UpdateKorisnikByKorisnik(KorisnikUpdateRegistrationDto korisnik)
+        {
+            //throw new NotImplementedException();
         }
 
 
